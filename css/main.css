@@ -1275,7 +1275,7 @@ pre code {
   color: var(--brand-hover-color);
 }
 .site-title {
-  font-family: Lato, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: Noto Serif SC, Lato, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 1.375em;
   font-weight: normal;
   line-height: 1.5;
@@ -1417,7 +1417,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #ff55c8;
+    background: #5ce8ff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -1787,7 +1787,7 @@ pre code {
   width: 100%;
 }
 .with-love {
-  color: #000;
+  color: ;
   display: inline-block;
   margin: 0 5px;
 }
