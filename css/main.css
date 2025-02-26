@@ -1417,7 +1417,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #529458;
+    background: #ffff40;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -1888,9 +1888,6 @@ pre code {
   visibility: hidden;
 }
 .use-motion .post-body {
-  visibility: hidden;
-}
-.use-motion .collection-header {
   visibility: hidden;
 }
 .posts-collapse .post-content {
@@ -2774,7 +2771,6 @@ header.header {
     color: var(--text-color);
     margin-top: 12px;
     max-height: calc(100vh - 24px);
-    visibility: hidden;
   }
   .site-state-item {
     padding: 0 10px;

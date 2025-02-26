@@ -41,7 +41,7 @@ NexT.motion.middleWares = {
       });
     }
 
-    function pushToSequence(targets, sequenceQueue = false) {
+    function pushToSequence(targets, sequenceQueue = true) {
       sequence.push({
         targets,
         opacity: 1,
