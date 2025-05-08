@@ -19,33 +19,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前言 由于友链页面有使用图片的要求，同时为其他人的站点提供相关的图片资源（虽然使用现成的 GitHub Page 就可以基本实现，但是 Page 所在的仓库是公开的），尝试通过 GitHub 作为图床解决这个问题。然而，访问速度和稳定性都无法得到保证，为此通过网上搜索学习了一下反向代理 (Reverse Proxy) 的相关知识。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cloudflare Worker 反向代理尝试">
-<meta property="og:url" content="http://example.com/2025/03/02/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/index.html">
+<meta property="og:url" content="http://summ2.link/categories/Web/cloudflare-worker-proxy/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
 <meta property="og:description" content="前言 由于友链页面有使用图片的要求，同时为其他人的站点提供相关的图片资源（虽然使用现成的 GitHub Page 就可以基本实现，但是 Page 所在的仓库是公开的），尝试通过 GitHub 作为图床解决这个问题。然而，访问速度和稳定性都无法得到保证，为此通过网上搜索学习了一下反向代理 (Reverse Proxy) 的相关知识。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/1920px-Proxy_concept_en.svg.png">
-<meta property="og:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/2560px-Reverse_proxy_h2g2bob.svg.png">
-<meta property="og:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302175549537.png">
-<meta property="og:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302175927347.png">
-<meta property="og:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302180553146.png">
+<meta property="og:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/1920px-Proxy_concept_en.svg.png">
+<meta property="og:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/2560px-Reverse_proxy_h2g2bob.svg.png">
+<meta property="og:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302175549537.png">
+<meta property="og:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302175927347.png">
+<meta property="og:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/image-20250302180553146.png">
 <meta property="article:published_time" content="2025-03-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-21T09:09:52.000Z">
+<meta property="article:modified_time" content="2025-05-08T04:14:53.054Z">
 <meta property="article:author" content="summ2">
 <meta property="article:tag" content="Reverse Proxy">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/1920px-Proxy_concept_en.svg.png">
+<meta name="twitter:image" content="http://summ2.link/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/1920px-Proxy_concept_en.svg.png">
 
 
-<link rel="canonical" href="http://example.com/2025/03/02/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/">
+<link rel="canonical" href="http://summ2.link/categories/Web/cloudflare-worker-proxy/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/03/02/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/","path":"2025/03/02/202532-Cloudflare-Worker-反向代理尝试/","title":"Cloudflare Worker 反向代理尝试"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://summ2.link/categories/Web/cloudflare-worker-proxy/","path":"categories/Web/cloudflare-worker-proxy/","title":"Cloudflare Worker 反向代理尝试"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Cloudflare Worker 反向代理尝试 | 蘅芷清芬</title>
@@ -162,7 +162,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/02/202532-Cloudflare-Worker-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%B0%9D%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="http://summ2.link/categories/Web/cloudflare-worker-proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -288,12 +288,12 @@ Worker，这里命名为 assets。使用的代码如下：</p>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/02/18/2025218-HGAME-2025-Week-2-Writeup/" rel="prev" title="HGAME 2025 Week 2 Writeup">
+                <a href="/categories/CTF/hgame-2025-week2-wp/" rel="prev" title="HGAME 2025 Week 2 Writeup">
                   <i class="fa fa-angle-left"></i> HGAME 2025 Week 2 Writeup
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/03/20/2025320-HGAME-2025-Final-%E5%A4%8D%E7%8E%B0/" rel="next" title="HGAME 2025 Final 复现">
+                <a href="/categories/CTF/hgame-2025-final/" rel="next" title="HGAME 2025 Final 复现">
                   HGAME 2025 Final 复现 <i class="fa fa-angle-right"></i>
                 </a>
             </div>

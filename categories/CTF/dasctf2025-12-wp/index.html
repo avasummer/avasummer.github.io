@@ -19,39 +19,39 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前言 本次 DASCTF 12 月赛尝试了 pwn 方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DASCTF12 月赛复现">
-<meta property="og:url" content="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:url" content="http://summ2.link/categories/CTF/dasctf2025-12-wp/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
 <meta property="og:description" content="前言 本次 DASCTF 12 月赛尝试了 pwn 方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110920209.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108111643902.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114221721.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114849186.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108120631350.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108115753563.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108121903389.png">
-<meta property="og:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250110222812447.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110920209.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108111643902.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114221721.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108114849186.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108120631350.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108115753563.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108121903389.png">
+<meta property="og:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250110222812447.png">
 <meta property="article:published_time" content="2025-01-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-10T15:00:52.000Z">
+<meta property="article:modified_time" content="2025-05-08T04:15:59.776Z">
 <meta property="article:author" content="summ2">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="代码审计">
 <meta property="article:tag" content="函数指针">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
+<meta name="twitter:image" content="http://summ2.link/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/image-20250108110826276.png">
 
 
-<link rel="canonical" href="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/">
+<link rel="canonical" href="http://summ2.link/categories/CTF/dasctf2025-12-wp/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/","path":"2025/01/08/202518-DASCTF12月赛复现/","title":"DASCTF12 月赛复现"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://summ2.link/categories/CTF/dasctf2025-12-wp/","path":"categories/CTF/dasctf2025-12-wp/","title":"DASCTF12 月赛复现"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>DASCTF12 月赛复现 | 蘅芷清芬</title>
@@ -168,7 +168,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/01/08/202518-DASCTF12%E6%9C%88%E8%B5%9B%E5%A4%8D%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="http://summ2.link/categories/CTF/dasctf2025-12-wp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -307,12 +307,12 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/11/06/2024116-%E9%92%B1%E5%A1%98%E6%B1%9F%E8%BE%B9/" rel="prev" title="钱塘江边">
+                <a href="/categories/%E6%97%A5%E5%B8%B8/20241106-daily/" rel="prev" title="钱塘江边">
                   <i class="fa fa-angle-left"></i> 钱塘江边
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/02/10/2025210-HGAME-2025-Week-1-Writeup/" rel="next" title="HGAME 2025 Week 1 Writeup">
+                <a href="/categories/CTF/hgame-2025-week1-wp/" rel="next" title="HGAME 2025 Week 1 Writeup">
                   HGAME 2025 Week 1 Writeup <i class="fa fa-angle-right"></i>
                 </a>
             </div>

@@ -19,35 +19,35 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &quot;vi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Heap1sEz - 堆漏洞的简单利用">
-<meta property="og:url" content="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/index.html">
+<meta property="og:url" content="http://summ2.link/categories/CTF/heap1sEz/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
 <meta property="og:description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &quot;vi">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006122827910.png">
-<meta property="og:image" content="http://example.com/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006124624160.png">
-<meta property="og:image" content="http://example.com/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241007121038110.png">
-<meta property="og:image" content="http://example.com/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241007173521197.png">
+<meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006122827910.png">
+<meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006124624160.png">
+<meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241007121038110.png">
+<meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241007173521197.png">
 <meta property="article:published_time" content="2024-10-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-10-07T09:46:38.000Z">
+<meta property="article:modified_time" content="2025-05-08T04:16:43.666Z">
 <meta property="article:author" content="summ2">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="heap">
 <meta property="article:tag" content="unlink">
 <meta property="article:tag" content="UAF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006122827910.png">
+<meta name="twitter:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006122827910.png">
 
 
-<link rel="canonical" href="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/">
+<link rel="canonical" href="http://summ2.link/categories/CTF/heap1sEz/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/","path":"2024/10/07/2024101-Heap1sEz---堆漏洞的简单利用/","title":"Heap1sEz - 堆漏洞的简单利用"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://summ2.link/categories/CTF/heap1sEz/","path":"categories/CTF/heap1sEz/","title":"Heap1sEz - 堆漏洞的简单利用"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Heap1sEz - 堆漏洞的简单利用 | 蘅芷清芬</title>
@@ -164,7 +164,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/07/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://summ2.link/categories/CTF/heap1sEz/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -320,7 +320,7 @@ unlink 相关代码。</p>
             <div class="post-nav-item">
             </div>
             <div class="post-nav-item">
-                <a href="/2024/11/03/2024113-shellcode---%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%9A%84shellcode%E8%A7%A3%E6%B3%95/" rel="next" title="shellcode - 有长度限制的 shellcode 解法">
+                <a href="/categories/CTF/241103-shellcode/" rel="next" title="shellcode - 有长度限制的 shellcode 解法">
                   shellcode - 有长度限制的 shellcode 解法 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
