@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://summ2.link/links/index.html</loc>
+    
+    <lastmod>2025-05-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://summ2.link/categories/CTF/241103-shellcode/</loc>
     
     <lastmod>2025-05-08</lastmod>
@@ -77,15 +86,6 @@
     <loc>http://summ2.link/categories/CTF/vidarshare-fsop/</loc>
     
     <lastmod>2025-05-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://summ2.link/links/index.html</loc>
-    
-    <lastmod>2025-03-02</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -198,20 +198,6 @@
   </url>
   
   <url>
-    <loc>http://summ2.link/tags/FSOP/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://summ2.link/tags/House-of-Apple/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://summ2.link/tags/kernel/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -220,6 +206,20 @@
   
   <url>
     <loc>http://summ2.link/tags/blind-pwn/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://summ2.link/tags/FSOP/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://summ2.link/tags/House-of-Apple/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
