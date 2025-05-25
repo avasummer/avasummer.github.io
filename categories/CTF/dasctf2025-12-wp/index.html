@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="前言 本次 DASCTF 12 月赛尝试了 pwn 方向的两道题目，最终还是如愿以偿的爆零了。首先看到题目我就有种陌生的感觉，给定程序是去掉调试符号的，并且有多个函数，大大降低了可读性，和我先前遇见的题目有不小的区别。">
 <meta property="og:type" content="article">
@@ -297,14 +297,29 @@
 决定程序后续流程，具体是编码类型 (base64, base85...)。</p>
 <p>有意思的是，程序将字符串的加解密流程放在在 <code>_data</code>
 ，即数据段中。</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v10 = ((__int64 (__fastcall *)(<span class="type">char</span> *, <span class="type">const</span> <span class="type">char</span> *))*(&amp;off_7260 + v8))(s, a3);</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.data:0000000000007260 off_7260        dq offset sub_1D6A      ; DATA XREF: sub_3990+155↑o</span><br><span class="line">.data:0000000000007260                                         ; sub_3990+1C8↑o</span><br><span class="line">.data:0000000000007268                 dq offset sub_1ED6</span><br><span class="line">.data:0000000000007270                 dq offset sub_22B2</span><br><span class="line">.data:0000000000007278                 dq offset sub_27D4</span><br><span class="line">.data:0000000000007280                 dq offset sub_2B94</span><br><span class="line">.data:0000000000007288                 dq offset sub_2E17</span><br><span class="line">.data:0000000000007290                 dq offset sub_3498</span><br><span class="line">.data:0000000000007290 _data           ends</span><br><span class="line">.data:0000000000007290</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++">v10 = ((__int64 (__fastcall *)(<span class="type">char</span> *, <span class="type">const</span> <span class="type">char</span> *))*(&amp;off_7260 + v8))(s, a3);</code></pre>
+<pre><code class="highlight assembly">.data:0000000000007260 off_7260        dq offset sub_1D6A      ; DATA XREF: sub_3990+155↑o
+.data:0000000000007260                                         ; sub_3990+1C8↑o
+.data:0000000000007268                 dq offset sub_1ED6
+.data:0000000000007270                 dq offset sub_22B2
+.data:0000000000007278                 dq offset sub_27D4
+.data:0000000000007280                 dq offset sub_2B94
+.data:0000000000007288                 dq offset sub_2E17
+.data:0000000000007290                 dq offset sub_3498
+.data:0000000000007290 _data           ends
+.data:0000000000007290</code></pre>
 <p>这涉及到 C 语言中<strong>函数指针</strong>的概念:</p>
 <p>函数指针是一个指向函数的<strong>指针</strong>变量，如：</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> (*p)(<span class="type">int</span> x, <span class="type">int</span>  y);</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="built_in">int</span> (*p)(<span class="type">int</span> x, <span class="type">int</span>  y);</code></pre>
 <p>具有两个整型参数，返回值是整型。</p>
 <p>如下代码实现了通过函数指针调用函数：</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">maxValue</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>{</span><br><span class="line">    <span class="keyword">return</span> a &gt; b ? a : b;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="built_in">int</span> (*p)(<span class="type">int</span>, <span class="type">int</span>) = <span class="literal">NULL</span>;</span><br><span class="line">p = maxValue;</span><br><span class="line"><span class="built_in">p</span>(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="function"><span class="type">int</span> <span class="title">maxValue</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>{
+    <span class="keyword">return</span> a &gt; b ? a : b;
+}
+
+<span class="built_in">int</span> (*p)(<span class="type">int</span>, <span class="type">int</span>) = <span class="literal">NULL</span>;
+p = maxValue;
+<span class="built_in">p</span>(<span class="number">1</span>, <span class="number">2</span>);</code></pre>
 <p>而题目程序中就是通过类似这样的函数指针数组实现的。</p>
 <p>接着，根据与 <code>unk_73C0</code> 中的数据比较这一功能可以（应该？）推测是在计算哈希</p>
 <figure>
@@ -337,7 +352,50 @@
 <h2 id="攻击流程">攻击流程</h2>
 <p>以下为官方 wp 思路。</p>
 <p>寻找具有 'b85' 开头 SHA256 值的字符串，将 flag 槽位上的哈希修改为这个值。具体实现如下（来自官方 wp）：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwncli <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.terminal = [<span class="string">"tmux"</span>, <span class="string">"splitw"</span>, <span class="string">"-h"</span>, <span class="string">"-l"</span>, <span class="string">"122"</span>]</span><br><span class="line">local_flag = sys.argv[<span class="number">1</span>] <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local_flag == <span class="string">"remote"</span>:</span><br><span class="line">    addr = <span class="string">''</span></span><br><span class="line">    host = addr.split(<span class="string">' '</span>)</span><br><span class="line">    gift.io = remote(host[<span class="number">0</span>], host[<span class="number">1</span>])</span><br><span class="line">    gift.remote = <span class="literal">True</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    gift.io = process(<span class="string">'./BaseMachine'</span>)</span><br><span class="line">    <span class="keyword">if</span> local_flag == <span class="string">"nodbg"</span>:</span><br><span class="line">        gift.remote = <span class="literal">True</span></span><br><span class="line">init_x64_context(gift.io, gift)</span><br><span class="line">libc = load_libc()</span><br><span class="line">gift.elf = ELF(<span class="string">'./BaseMachine'</span>)</span><br><span class="line">cmd = <span class="string">'''</span></span><br><span class="line"><span class="string">    c</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">'plain b64 '</span> + <span class="built_in">str</span>(i))</span><br><span class="line"></span><br><span class="line">launch_gdb(cmd)</span><br><span class="line">sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'plain b85 '</span> + <span class="string">b'aaaa'</span> * <span class="number">10</span> + <span class="string">b'a'</span>)</span><br><span class="line">ru(<span class="string">"😍😍😍 "</span>)</span><br><span class="line">data = ru(<span class="string">b'\n'</span>, drop=<span class="literal">True</span>)</span><br><span class="line">pad1 = data[<span class="number">0</span>:<span class="number">5</span>]</span><br><span class="line">pad2 = data[-<span class="number">5</span>:]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Match found! String: 6eU, SHA-256: b8509ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">8</span>):</span><br><span class="line">    sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'b85 plain '</span> + <span class="string">b'09ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888aaaa'</span> + pad1 * i + pad2 + pad1 * (<span class="number">10</span> - i))</span><br><span class="line"></span><br><span class="line">sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'plain b64 6eU'</span>)</span><br><span class="line">ru(<span class="string">"😍😍😍 "</span>)</span><br><span class="line">flag = ru(<span class="string">b'\n'</span>, drop=<span class="literal">True</span>)</span><br><span class="line">sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'b64 plain '</span> + flag)</span><br><span class="line"></span><br><span class="line">ia()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="comment">#!/usr/bin/env python3</span>
+<span class="keyword">from</span> pwncli <span class="keyword">import</span> *
+
+context.terminal = [<span class="string">"tmux"</span>, <span class="string">"splitw"</span>, <span class="string">"-h"</span>, <span class="string">"-l"</span>, <span class="string">"122"</span>]
+local_flag = sys.argv[<span class="number">1</span>] <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span> <span class="keyword">else</span> <span class="number">0</span>
+
+<span class="keyword">if</span> local_flag == <span class="string">"remote"</span>:
+    addr = <span class="string">''</span>
+    host = addr.split(<span class="string">' '</span>)
+    gift.io = remote(host[<span class="number">0</span>], host[<span class="number">1</span>])
+    gift.remote = <span class="literal">True</span>
+<span class="keyword">else</span>:
+    gift.io = process(<span class="string">'./BaseMachine'</span>)
+    <span class="keyword">if</span> local_flag == <span class="string">"nodbg"</span>:
+        gift.remote = <span class="literal">True</span>
+init_x64_context(gift.io, gift)
+libc = load_libc()
+gift.elf = ELF(<span class="string">'./BaseMachine'</span>)
+cmd = <span class="string">'''</span>
+<span class="string">    c</span>
+<span class="string">'''</span>
+
+
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):
+    sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">'plain b64 '</span> + <span class="built_in">str</span>(i))
+
+launch_gdb(cmd)
+sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'plain b85 '</span> + <span class="string">b'aaaa'</span> * <span class="number">10</span> + <span class="string">b'a'</span>)
+ru(<span class="string">"😍😍😍 "</span>)
+data = ru(<span class="string">b'\n'</span>, drop=<span class="literal">True</span>)
+pad1 = data[<span class="number">0</span>:<span class="number">5</span>]
+pad2 = data[-<span class="number">5</span>:]
+
+<span class="comment"># Match found! String: 6eU, SHA-256: b8509ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888</span>
+
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">8</span>):
+    sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'b85 plain '</span> + <span class="string">b'09ba8fe72a1a7755d30eb9f16d4337774beab47a9d59d51a659c8ea8ce888aaaa'</span> + pad1 * i + pad2 + pad1 * (<span class="number">10</span> - i))
+
+sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'plain b64 6eU'</span>)
+ru(<span class="string">"😍😍😍 "</span>)
+flag = ru(<span class="string">b'\n'</span>, drop=<span class="literal">True</span>)
+sla(<span class="string">"🫠🫠🫠"</span>, <span class="string">b'b64 plain '</span> + flag)
+
+ia()</code></pre>
 <h1 id="总结">总结</h1>
 <p>这题的作者可见对编码非常熟悉，目前我还没有对 base 系列有一个太清晰的了解。最多知道它大概的原理，或者仿写加解密的代码之类的。以后有空我会尝试手搓一下各种 base 的加解密的（之前接触 base 是 hgame-mini
 2024 上的一道逆向题 ——base emoji）。另外对代码的阅读能力也有待提升。</p>

