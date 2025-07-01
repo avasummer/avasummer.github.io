@@ -21,24 +21,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":"mac","style":null},"fold":{"enable":false,"height":500}},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="keep it simple stupid &gt;3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="蘅芷清芬">
-<meta property="og:url" content="http://summ2.link/archives/2025/05/index.html">
+    <meta name="description" content="Do you know 本人代码水平拙劣🥲，实现部分仅供参考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU ICS PA 一些笔记">
+<meta property="og:url" content="http://summ2.link/categories/Study/nju-ics-pa/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
-<meta property="og:description" content="keep it simple stupid &gt;3">
+<meta property="og:description" content="Do you know 本人代码水平拙劣🥲，实现部分仅供参考">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://summ2.link/categories/Study/nju-ics-pa/PA1/image-20250701121336713.png">
+<meta property="og:image" content="http://summ2.link/categories/Study/nju-ics-pa/PA1/image-20250701151239011.png">
+<meta property="article:published_time" content="2025-03-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-30T16:00:00.000Z">
 <meta property="article:author" content="summ2">
+<meta property="article:tag" content="ICS">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://summ2.link/categories/Study/nju-ics-pa/PA1/image-20250701121336713.png">
 
 
-<link rel="canonical" href="http://summ2.link/archives/2025/05/">
+<link rel="canonical" href="http://summ2.link/categories/Study/nju-ics-pa/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/2025/05/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://summ2.link/categories/Study/nju-ics-pa/","path":"categories/Study/nju-ics-pa/","title":"NJU ICS PA 一些笔记"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | 蘅芷清芬</title>
+<title>NJU ICS PA 一些笔记 | 蘅芷清芬</title>
   
 
 
@@ -97,7 +103,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">蘅芷清芬</h1>
+      <p class="site-title">蘅芷清芬</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -150,7 +156,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -163,6 +169,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pa1---%E5%BC%80%E5%A4%A9%E8%BE%9F%E5%9C%B0%E7%9A%84%E7%AF%87%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">PA1 - 开天辟地的篇章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rtfsc"><span class="nav-number">1.1.</span> <span class="nav-text">RTFSC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E8%A7%86%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">监视点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.2.2.</span> <span class="nav-text">链表维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E8%A7%86%E7%82%B9%E6%B1%82%E5%80%BC"><span class="nav-number">1.2.3.</span> <span class="nav-text">监视点求值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E6%89%8B%E5%86%8C"><span class="nav-number">1.3.</span> <span class="nav-text">如何阅读手册</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E6%98%AF%E4%B8%AA%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">1.3.1.</span> <span class="nav-text">程序是个状态机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">1.3.2.</span> <span class="nav-text">理解基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rtfm"><span class="nav-number">1.3.3.</span> <span class="nav-text">RTFM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#riscv32%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">riscv32 有哪几种指令格式？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mstatus%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">mstatus 寄存器的结构是怎么样的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-wall%E5%92%8C-werror"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">为什么要使用 -Wall 和 -Werror?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.4.</span> <span class="nav-text">shell 命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pa2---%E7%AE%80%E5%8D%95%E5%A4%8D%E6%9D%82%E7%9A%84%E6%9C%BA%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">PA2 - 简单复杂的机器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#references"><span class="nav-number">3.</span> <span class="nav-text">References</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -193,69 +200,259 @@
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 12 篇日志。 继续努力。</span>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2025<span class="collection-year-count">9</span></span>
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://summ2.link/categories/Study/nju-ics-pa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="summ2">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘅芷清芬">
+      <meta itemprop="description" content="keep it simple stupid >3">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NJU ICS PA 一些笔记 | 蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU ICS PA 一些笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-01T00:00:00+08:00">2025-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-01 00:00:00" itemprop="dateModified" datetime="2025-07-01T00:00:00+08:00">2025-07-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Study/" itemprop="url" rel="index"><span itemprop="name">Study</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><div class="note info"><p><em>Do you know</em></p>
+<p>本人代码水平拙劣🥲，实现部分仅供参考</p>
+</div>
+<span id="more"></span>
+<h1 id="pa1---开天辟地的篇章">PA1 - 开天辟地的篇章</h1>
+<h2 id="rtfsc">RTFSC</h2>
+<p>文件：<code>nemu/src/monitor/sdb/sdb.c</code></p>
+<p>原因：退出时 <code>nemu_state.state</code> 不是 “正常” 的</p>
+<p>解决办法：</p>
+<pre><code class="highlight c"><span class="type">static</span> <span class="type">int</span> <span class="title function_">cmd_q</span><span class="params">(<span class="type">char</span> *args)</span> {
+  nemu_state.state = NEMU_QUIT;
+  <span class="keyword">return</span> <span class="number">-1</span>;
+}</code></pre>
+<h2 id="监视点">监视点</h2>
+<h3 id="基本框架">基本框架</h3>
+<p>添加 <code>w &lt;expr&gt;</code> 和 <code>d &lt;index&gt;</code> 命令，来添加和删除监视点。</p>
+<p>并且需要实现监视点池中链表的维护，监视点表达式的计算。</p>
+<p>为了提高 NEMU 的性能，提供监视点功能的开关选项。</p>
+<h3 id="链表维护">链表维护</h3>
+<p>监视点池中涉及监视点链表和空闲链表，通过 <code>init_wp_pool()</code> 来对其初始化。</p>
+<pre><code class="highlight c"><span class="type">void</span> <span class="title function_">init_wp_pool</span><span class="params">()</span> {
+  <span class="type">int</span> i;
+  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; NR_WP; i ++) {
+    wp_pool[i].NO = i;
+    wp_pool[i].next = (i == NR_WP - <span class="number">1</span> ? <span class="literal">NULL</span> : &amp;wp_pool[i + <span class="number">1</span>]);
+  }
+
+  head = <span class="literal">NULL</span>;
+  free_ = wp_pool;
+}</code></pre>
+<p>接着，通过 <code>new_wp()</code> 和 <code>free_wp()</code> 实现监视点的管理</p>
+<pre><code class="highlight c"><span class="type">int</span> <span class="title function_">new_wp</span><span class="params">(<span class="type">char</span>* args)</span>{
+  WP *p=<span class="literal">NULL</span>,*q=<span class="literal">NULL</span>;
+  <span class="keyword">if</span> (free_==<span class="literal">NULL</span>)
+  {
+    <span class="built_in">printf</span>(<span class="string">"Watchpoints Limit"</span>);
+    <span class="keyword">return</span> <span class="number">-1</span>;
+  }
+  p=free_;
+  <span class="type">bool</span> success=<span class="number">1</span>;
+  p-&gt;result = expr(args,&amp;success);
+  <span class="keyword">if</span> (!success)<span class="keyword">return</span> <span class="number">-1</span>;
+  p-&gt;expr = strdup(args);
+  free_=free_-&gt;next;
+  <span class="keyword">if</span> (head!=<span class="literal">NULL</span>)
+  {
+    q=head;
+    <span class="keyword">while</span> (q-&gt;next!=<span class="literal">NULL</span>)q=q-&gt;next;
+    q-&gt;next=p;
+    <span class="keyword">return</span> <span class="number">1</span>;
+  }
+  head=p;
+  head-&gt;next=<span class="literal">NULL</span>;
+  <span class="keyword">return</span> <span class="number">1</span>;
+}</code></pre>
+<pre><code class="highlight c"><span class="type">void</span> <span class="title function_">free_wp</span><span class="params">(<span class="type">int</span> no)</span>
+{
+  <span class="keyword">if</span> (head==<span class="literal">NULL</span>)
+  {
+    <span class="built_in">printf</span>(<span class="string">"Watchpoint %d not found.\n"</span>,no);
+    <span class="keyword">return</span>;
+  }
+  <span class="keyword">if</span> (head-&gt;NO==no)
+  {
+    WP *wp=head;
+    head=wp-&gt;next;
+    wp-&gt;next=free_;
+    free_=wp;
+    <span class="keyword">return</span>;
+  }
+  WP *p=<span class="literal">NULL</span>;
+  <span class="keyword">if</span> (head!=<span class="literal">NULL</span>)
+  {
+    p=head;
+    <span class="keyword">while</span> (<span class="number">1</span>){
+      <span class="keyword">if</span> (p-&gt;next-&gt;NO==no){
+        WP *wp=p-&gt;next;
+        p-&gt;next=wp-&gt;next;
+        wp-&gt;next=free_;
+        free_=wp;
+        <span class="keyword">return</span>;
+      }
+      <span class="keyword">if</span> (p-&gt;next==<span class="literal">NULL</span>)
+      {
+        <span class="built_in">printf</span>(<span class="string">"Watchpoint %d not found.\n"</span>,no);
+        <span class="keyword">return</span>;
+      }
+      p=p-&gt;next;
+    }
+  }
+}</code></pre>
+<h3 id="监视点求值">监视点求值</h3>
+<p>为了判断监视点的值是否发生变化，还需要在结构体中添加一个成员来记录。然后通过 <code>check_expr()</code> 来求值和判断变化。</p>
+<pre><code class="highlight c"><span class="type">bool</span> <span class="title function_">check_expr</span><span class="params">()</span>{
+  <span class="type">bool</span> changed=<span class="literal">false</span>;
+  <span class="keyword">if</span> (head==<span class="literal">NULL</span>)<span class="keyword">return</span> <span class="number">0</span>;
+  WP *p;
+  <span class="type">bool</span> success=<span class="literal">true</span>;
+  p=head;
+  <span class="type">word_t</span> result = expr(p-&gt;expr,&amp;success);
+  <span class="keyword">if</span> (result!=p-&gt;result &amp;&amp; success)
+  {
+    <span class="built_in">printf</span>(<span class="string">"Watchpoint %d changed at 0x%x.\n"</span>,p-&gt;NO,cpu.pc);
+    changed=<span class="literal">true</span>;
+  }
+  <span class="keyword">if</span> (changed)<span class="keyword">return</span> <span class="number">1</span>;
+  <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+<h2 id="如何阅读手册">如何阅读手册</h2>
+<h3 id="程序是个状态机">程序是个状态机</h3>
+<p>对于计算 <code>1+2+...+100</code> 的程序的状态机，它是确定性的。</p>
+<pre><code class="highlight plaintext">(0, x, x) -&gt; (1, 0, x) -&gt; (2, 0, 0) -&gt; (3, 0, 1) -&gt; (4, 1, 1) -&gt; (5, 1, 2) -&gt; (6, 3, 2) -&gt; ... -&gt; (199,4851, 99) -&gt; (200, 4950, 99) -&gt; (201, 4950, 100) -&gt; (202, 5050, 100)</code></pre>
+<h3 id="理解基础设施">理解基础设施</h3>
+<p>不必多说，使用过调试器的话肯定有所体会。</p>
+<h3 id="rtfm">RTFM</h3>
+<h4 id="riscv32有哪几种指令格式">riscv32 有哪几种指令格式？</h4>
+<p>There are four core instruction formats.[^!]</p>
+<p>Register-Type, Immediate-Type, Store-Type, Upper Immediate-Type.</p>
+<p>#### LUI 指令的行为是什么？</p>
+<figure>
+<img src="PA1/image-20250701121336713.png" alt="LUI">
+<figcaption aria-hidden="true">LUI</figcaption>
+</figure>
+<p>LUI (load upper immediate) is used to build 32-bit constants and uses
+the U-type format. LUI places the 32-bit U-immediate value into the
+destination register rd, filling in the lowest 12 bits with zeros.</p>
+<h4 id="mstatus寄存器的结构是怎么样的">mstatus 寄存器的结构是怎么样的？</h4>
+<p>The mstatus (Machine Status) register is an MXLEN-bit read/write
+register formatted as shown in figures below. It's a <em>Control and
+Status Register</em>.<img src="PA1/image-20250701151239011.png" alt="mstatus"></p>
+<h4 id="为什么要使用-wall和-werror">为什么要使用 <code>-Wall</code> 和 <code>-Werror</code>?</h4>
+<p>At section 3.9<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, we found that:</p>
+<p><code>-Werror</code> Turn all warnings into errors.</p>
+<p><code>-Wall</code> This enables all the warnings about constructions
+that some users consider questionable, and that are easy to avoid (or
+modify to prevent the warning), even in conjunction with macros. This
+also enables some language-specific warnings.</p>
+<p>To add these options, we can leverage compilers to identify potential
+issues in our programs.</p>
+<h3 id="shell命令">shell 命令</h3>
+<p>使用 <code>find . -type f \( -name "*.c" -o -name "*.h" \) -print0 | xargs -0 wc -l</code> 来统计行数</p>
+<p>由于我环境经历了多次迁移，似乎把 git 弄坏了（</p>
+<p>不过毕竟我没有提交作业的需求，就不注意这些细节了</p>
+<h1 id="pa2---简单复杂的机器">PA2 - 简单复杂的机器</h1>
+<h1 id="references">References</h1>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>https://gcc.gnu.org/onlinedocs/gcc-15.1.0/gcc.pdf<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-05-27T00:00:00+08:00"
-              content="2025-05-27">
-          05-27
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/categories/Study/simple-nn/" itemprop="url">
-            <span itemprop="name">简单神经网络搭建</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ICS/" rel="tag"><i class="fa fa-tag"></i> ICS</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/categories/CTF/vidarshare-fsop/" rel="prev" title="Vidar 分享会 - FSOP">
+                  <i class="fa fa-angle-left"></i> Vidar 分享会 - FSOP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/categories/CTF/easydma/" rel="next" title="QEMU PWN - EasyDMA">
+                  QEMU PWN - EasyDMA <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-05-08T00:00:00+08:00"
-              content="2025-05-08">
-          05-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/categories/CTF/easydma/" itemprop="url">
-            <span itemprop="name">QEMU PWN - EasyDMA</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
+
+
+
 
 </div>
   </main>
