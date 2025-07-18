@@ -21,24 +21,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"summ2.link","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":"mac","style":null},"fold":{"enable":false,"height":500}},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeIn","post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="keep it simple stupid &gt;3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="蘅芷清芬">
-<meta property="og:url" content="http://summ2.link/archives/page/2/index.html">
+    <meta name="description" content="Foreword 想给今年的 HGAME Mini 2025 出一道简单的 Pwn 题，突然想着之前的题目似乎没有涉及到 IoT Pwn 的（虽然可能是因为不太算 pwn 的入门内容？），打算来一道比较简单的，正好学习一下 IoT 的相关知识吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARM Bare metal try">
+<meta property="og:url" content="http://summ2.link/categories/Pwn/Study/arm-bare-metal-helloworld/index.html">
 <meta property="og:site_name" content="蘅芷清芬">
-<meta property="og:description" content="keep it simple stupid &gt;3">
+<meta property="og:description" content="Foreword 想给今年的 HGAME Mini 2025 出一道简单的 Pwn 题，突然想着之前的题目似乎没有涉及到 IoT Pwn 的（虽然可能是因为不太算 pwn 的入门内容？），打算来一道比较简单的，正好学习一下 IoT 的相关知识吧。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://summ2.link/2025715-ARM-Bare-metal-try/image-20250715165727185.png">
+<meta property="og:image" content="http://summ2.link/2025715-ARM-Bare-metal-try/image-20250715165809878.png">
+<meta property="article:published_time" content="2025-07-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-14T16:00:00.000Z">
 <meta property="article:author" content="summ2">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="QEMU">
+<meta property="article:tag" content="bare metal">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://summ2.link/2025715-ARM-Bare-metal-try/image-20250715165727185.png">
 
 
-<link rel="canonical" href="http://summ2.link/archives/page/2/">
+<link rel="canonical" href="http://summ2.link/categories/Pwn/Study/arm-bare-metal-helloworld/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://summ2.link/categories/Pwn/Study/arm-bare-metal-helloworld/","path":"categories/Pwn/Study/arm-bare-metal-helloworld/","title":"ARM Bare metal try"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | 蘅芷清芬</title>
+<title>ARM Bare metal try | 蘅芷清芬</title>
   
 
 
@@ -97,7 +105,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">蘅芷清芬</h1>
+      <p class="site-title">蘅芷清芬</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -150,7 +158,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -163,6 +171,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#foreword"><span class="nav-number">1.</span> <span class="nav-text">Foreword</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#choose-a-platform"><span class="nav-number">2.</span> <span class="nav-text">Choose a Platform</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-world"><span class="nav-number">3.</span> <span class="nav-text">Hello World</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#to-communicate---uart1"><span class="nav-number">3.1.</span> <span class="nav-text">To communicate - UART1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-transmit"><span class="nav-number">3.1.1.</span> <span class="nav-text">How to Transmit</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#run-a-helloworld.c"><span class="nav-number">3.2.</span> <span class="nav-text">Run a helloworld.c</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initialize"><span class="nav-number">3.2.1.</span> <span class="nav-text">Initialize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#makefile"><span class="nav-number">3.2.2.</span> <span class="nav-text">Makefile</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#references"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -193,92 +202,678 @@
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 13 篇日志。 继续努力。</span>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2024<span class="collection-year-count">3</span></span>
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://summ2.link/categories/Pwn/Study/arm-bare-metal-helloworld/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="summ2">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘅芷清芬">
+      <meta itemprop="description" content="keep it simple stupid >3">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ARM Bare metal try | 蘅芷清芬">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ARM Bare metal try
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-15 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-15T00:00:00+08:00">2025-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pwn/" itemprop="url" rel="index"><span itemprop="name">Pwn</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Pwn/Study/" itemprop="url" rel="index"><span itemprop="name">Study</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="foreword">Foreword</h1>
+<p>想给今年的 HGAME Mini
+2025 出一道简单的 Pwn 题，突然想着之前的题目似乎没有涉及到 IoT
+Pwn 的（虽然可能是因为不太算 pwn 的入门内容？），打算来一道比较简单的，正好学习一下 IoT 的相关知识吧。
+<span id="more"></span></p>
+<h1 id="choose-a-platform">Choose a Platform</h1>
+<p>IoT 设备的 ISA 一般使用 ARM, RISC-V, MIPS。题目考虑使用 nRF51822 based on
+ARM Cortex-M0 SoC, QEMU 对其有较好支持。</p>
+<pre><code class="highlight bash">qemu-system-arm \
+  -M microbit \
+  -cpu cortex-m0 \
+  -nographic \
+  -serial tcp:127.0.0.1:2333,server,telnet \
+  -kernel main.elf \
+  --gdb tcp::1234</code></pre>
+<h1 id="hello-world">Hello World</h1>
+<h2 id="to-communicate---uart1">To communicate - UART<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></h2>
+<p>In QEMU, a simulated serial port can serve as <code>stdio</code>.
+nRF51822 has one UART peripheral, we would use it to interact.</p>
+<p>For convenience, using the official library <a target="_blank" rel="noopener" href="https://github.com/NordicSemiconductor/nrfx">nrfx</a> to implement
+related functions, instead of defining addresses and operations by
+myself.</p>
+<p>Also, you can finish it with the manual.</p>
+<figure>
+<img src="/2025715-ARM-Bare-metal-try/image-20250715165727185.png" alt="Pin configuration">
+<figcaption aria-hidden="true">Pin configuration</figcaption>
+</figure>
+<h3 id="how-to-transmit">How to Transmit</h3>
+<figure>
+<img src="/2025715-ARM-Bare-metal-try/image-20250715165809878.png" alt="Transmission process">
+<figcaption aria-hidden="true">Transmission process</figcaption>
+</figure>
+<p><em>nrfx</em> defines a struct for parameters controlling uart.</p>
+<pre><code class="highlight c"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span>
+<span class="class">{</span>
+    <span class="type">void</span>                    * p_context;
+    <span class="type">nrfx_uart_event_handler_t</span> handler;
+    <span class="type">uint8_t</span>           <span class="type">const</span> * p_tx_buffer;
+    <span class="type">uint8_t</span>                 * p_rx_buffer;
+    <span class="type">uint8_t</span>                 * p_rx_secondary_buffer;
+    <span class="keyword">volatile</span> <span class="type">size_t</span>           tx_buffer_length;
+    <span class="type">size_t</span>                    rx_buffer_length;
+    <span class="type">size_t</span>                    rx_secondary_buffer_length;
+    <span class="keyword">volatile</span> <span class="type">size_t</span>           tx_counter;
+    <span class="keyword">volatile</span> <span class="type">size_t</span>           rx_counter;
+    <span class="keyword">volatile</span> <span class="type">bool</span>             tx_abort;
+    <span class="type">bool</span>                      rx_enabled;
+    <span class="type">nrfx_drv_state_t</span>          state;
+    <span class="type">bool</span>                      skip_gpio_cfg : <span class="number">1</span>;
+    <span class="type">bool</span>                      skip_psel_cfg : <span class="number">1</span>;
+} <span class="type">uart_control_block_t</span>;
+<span class="type">static</span> <span class="type">uart_control_block_t</span> m_cb[NRFX_UART_ENABLED_COUNT];</code></pre>
+<p><code>nrfx_uart_tx()</code> implenments this operation.</p>
+<pre><code class="highlight c"><span class="type">nrfx_err_t</span> <span class="title function_">nrfx_uart_tx</span><span class="params">(<span class="type">nrfx_uart_t</span> <span class="type">const</span> * p_instance,</span>
+<span class="params">                        <span class="type">uint8_t</span> <span class="type">const</span> *     p_data,</span>
+<span class="params">                        <span class="type">size_t</span>              length)</span>
+{
+    <span class="type">uart_control_block_t</span> * p_cb = &amp;m_cb[p_instance-&gt;drv_inst_idx];
+
+    NRFX_ASSERT(p_cb-&gt;state == NRFX_DRV_STATE_INITIALIZED);
+    NRFX_ASSERT(p_data);
+    NRFX_ASSERT(length &gt; <span class="number">0</span>);
+
+    <span class="type">nrfx_err_t</span> err_code;
+
+    <span class="keyword">if</span> (nrfx_uart_tx_in_progress(p_instance))
+    {
+        err_code = NRFX_ERROR_BUSY;
+        NRFX_LOG_WARNING(<span class="string">"Function: %s, error code: %s."</span>,
+                         __func__,
+                         NRFX_LOG_ERROR_STRING_GET(err_code));
+        <span class="keyword">return</span> err_code;
+    }
+    p_cb-&gt;tx_buffer_length = length;
+    p_cb-&gt;p_tx_buffer      = p_data;
+    p_cb-&gt;tx_counter       = <span class="number">0</span>;
+    p_cb-&gt;tx_abort         = <span class="literal">false</span>;
+
+    NRFX_LOG_INFO(<span class="string">"Transfer tx_len: %d."</span>, p_cb-&gt;tx_buffer_length);
+    NRFX_LOG_DEBUG(<span class="string">"Tx data:"</span>);
+    NRFX_LOG_HEXDUMP_DEBUG(p_cb-&gt;p_tx_buffer,
+                           p_cb-&gt;tx_buffer_length * <span class="keyword">sizeof</span>(p_cb-&gt;p_tx_buffer[<span class="number">0</span>]));
+
+    err_code = NRFX_SUCCESS;
+
+    nrf_uart_event_clear(p_instance-&gt;p_reg, NRF_UART_EVENT_TXDRDY);
+    nrf_uart_task_trigger(p_instance-&gt;p_reg, NRF_UART_TASK_STARTTX);
+
+    tx_byte(p_instance-&gt;p_reg, p_cb);
+
+    <span class="keyword">if</span> (p_cb-&gt;handler == <span class="literal">NULL</span>)
+    {
+        <span class="keyword">if</span> (!tx_blocking(p_instance-&gt;p_reg, p_cb))
+        {
+            <span class="comment">// The transfer has been aborted.</span>
+            err_code = NRFX_ERROR_FORBIDDEN;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// Wait until the last byte is completely transmitted.</span>
+            <span class="keyword">while</span> (!nrf_uart_event_check(p_instance-&gt;p_reg, NRF_UART_EVENT_TXDRDY))
+            {}
+            nrf_uart_task_trigger(p_instance-&gt;p_reg, NRF_UART_TASK_STOPTX);
+        }
+        p_cb-&gt;tx_buffer_length = <span class="number">0</span>;
+    }
+
+    NRFX_LOG_INFO(<span class="string">"Function: %s, error code: %s."</span>, __func__, NRFX_LOG_ERROR_STRING_GET(err_code));
+    <span class="keyword">return</span> err_code;
+}</code></pre>
+<p>it calls <code>tx_byte()</code>,
+<code>nrf_uart_txd_set()</code>...</p>
+<pre><code class="highlight c"><span class="type">static</span> <span class="type">void</span> <span class="title function_">tx_byte</span><span class="params">(NRF_UART_Type * p_uart, <span class="type">uart_control_block_t</span> * p_cb)</span>
+{
+    nrf_uart_event_clear(p_uart, NRF_UART_EVENT_TXDRDY);
+    <span class="type">uint8_t</span> txd = p_cb-&gt;p_tx_buffer[p_cb-&gt;tx_counter];
+    p_cb-&gt;tx_counter++;
+    nrf_uart_txd_set(p_uart, txd);
+}
+
+NRF_STATIC_INLINE <span class="type">void</span> <span class="title function_">nrf_uart_txd_set</span><span class="params">(NRF_UART_Type * p_reg, <span class="type">uint8_t</span> txd)</span>
+{
+    p_reg-&gt;TXD = txd;
+}</code></pre>
+<p>Base and registers addresses were defined in <em>nrf51.h</em>.</p>
+<pre><code class="highlight c"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span>                                <span class="comment">/*!&lt; (@ 0x40002000) UART0 Structure                                            */</span>
+  __OM  <span class="type">uint32_t</span>  TASKS_STARTRX;                <span class="comment">/*!&lt; (@ 0x00000000) Start UART receiver.                                       */</span>
+  __OM  <span class="type">uint32_t</span>  TASKS_STOPRX;                 <span class="comment">/*!&lt; (@ 0x00000004) Stop UART receiver.                                        */</span>
+  __OM  <span class="type">uint32_t</span>  TASKS_STARTTX;                <span class="comment">/*!&lt; (@ 0x00000008) Start UART transmitter.                                    */</span>
+  __OM  <span class="type">uint32_t</span>  TASKS_STOPTX;                 <span class="comment">/*!&lt; (@ 0x0000000C) Stop UART transmitter.                                     */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED[<span class="number">3</span>];
+  __OM  <span class="type">uint32_t</span>  TASKS_SUSPEND;                <span class="comment">/*!&lt; (@ 0x0000001C) Suspend UART.                                              */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED1[<span class="number">56</span>];
+  __IOM <span class="type">uint32_t</span>  EVENTS_CTS;                   <span class="comment">/*!&lt; (@ 0x00000100) CTS activated.                                             */</span>
+  __IOM <span class="type">uint32_t</span>  EVENTS_NCTS;                  <span class="comment">/*!&lt; (@ 0x00000104) CTS deactivated.                                           */</span>
+  __IOM <span class="type">uint32_t</span>  EVENTS_RXDRDY;                <span class="comment">/*!&lt; (@ 0x00000108) Data received in RXD.                                      */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED2[<span class="number">4</span>];
+  __IOM <span class="type">uint32_t</span>  EVENTS_TXDRDY;                <span class="comment">/*!&lt; (@ 0x0000011C) Data sent from TXD.                                        */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED3;
+  __IOM <span class="type">uint32_t</span>  EVENTS_ERROR;                 <span class="comment">/*!&lt; (@ 0x00000124) Error detected.                                            */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED4[<span class="number">7</span>];
+  __IOM <span class="type">uint32_t</span>  EVENTS_RXTO;                  <span class="comment">/*!&lt; (@ 0x00000144) Receiver timeout.                                          */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED5[<span class="number">46</span>];
+  __IOM <span class="type">uint32_t</span>  SHORTS;                       <span class="comment">/*!&lt; (@ 0x00000200) Shortcuts for UART.                                        */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED6[<span class="number">64</span>];
+  __IOM <span class="type">uint32_t</span>  INTENSET;                     <span class="comment">/*!&lt; (@ 0x00000304) Interrupt enable set register.                             */</span>
+  __IOM <span class="type">uint32_t</span>  INTENCLR;                     <span class="comment">/*!&lt; (@ 0x00000308) Interrupt enable clear register.                           */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED7[<span class="number">93</span>];
+  __IOM <span class="type">uint32_t</span>  ERRORSRC;                     <span class="comment">/*!&lt; (@ 0x00000480) Error source. Write error field to 1 to clear</span>
+<span class="comment">                                                                    error.                                                     */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED8[<span class="number">31</span>];
+  __IOM <span class="type">uint32_t</span>  ENABLE;                       <span class="comment">/*!&lt; (@ 0x00000500) Enable UART and acquire IOs.                               */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED9;
+  __IOM <span class="type">uint32_t</span>  PSELRTS;                      <span class="comment">/*!&lt; (@ 0x00000508) Pin select for RTS.                                        */</span>
+  __IOM <span class="type">uint32_t</span>  PSELTXD;                      <span class="comment">/*!&lt; (@ 0x0000050C) Pin select for TXD.                                        */</span>
+  __IOM <span class="type">uint32_t</span>  PSELCTS;                      <span class="comment">/*!&lt; (@ 0x00000510) Pin select for CTS.                                        */</span>
+  __IOM <span class="type">uint32_t</span>  PSELRXD;                      <span class="comment">/*!&lt; (@ 0x00000514) Pin select for RXD.                                        */</span>
+  __IM  <span class="type">uint32_t</span>  RXD;                          <span class="comment">/*!&lt; (@ 0x00000518) RXD register. On read action the buffer pointer</span>
+<span class="comment">                                                                    is displaced. Once read the character is</span>
+<span class="comment">                                                                    consumed. If read when no character available,</span>
+<span class="comment">                                                                    the UART will stop working.                                */</span>
+  __OM  <span class="type">uint32_t</span>  TXD;                          <span class="comment">/*!&lt; (@ 0x0000051C) TXD register.                                              */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED10;
+  __IOM <span class="type">uint32_t</span>  BAUDRATE;                     <span class="comment">/*!&lt; (@ 0x00000524) UART Baudrate.                                             */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED11[<span class="number">17</span>];
+  __IOM <span class="type">uint32_t</span>  CONFIG;                       <span class="comment">/*!&lt; (@ 0x0000056C) Configuration of parity and hardware flow control</span>
+<span class="comment">                                                                    register.                                                  */</span>
+  __IM  <span class="type">uint32_t</span>  RESERVED12[<span class="number">675</span>];
+  __IOM <span class="type">uint32_t</span>  POWER;                        <span class="comment">/*!&lt; (@ 0x00000FFC) Peripheral power control.                                  */</span>
+} NRF_UART_Type;                                <span class="comment">/*!&lt; Size = 4096 (0x1000)                                                      */</span></code></pre>
+<h2 id="run-a-helloworld.c">Run a <code>helloworld.c</code></h2>
+<h3 id="initialize">Initialize</h3>
+<p>Before executing the program, we need to initialize memory space
+satisfying the ARMv6-M architecture.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><strong>Includes</strong>:</p>
+<p>​ Stack Definition, Heap Definition, Interrupt Vector Table, Reset
+Handler, Entry point and prepare <code>.data</code>,
+<code>.bss</code>.</p>
+<p>For GCC compiler, the library provides a <code>startup.S</code>.</p>
+<pre><code class="highlight assembly">/*
+ 
+Copyright (c) 2009-2025 ARM Limited. All rights reserved.
+
+    SPDX-License-Identifier: Apache-2.0
+
+Licensed under the Apache License, Version 2.0 (the License); you may
+not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an AS IS BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+NOTICE: This file has been modified by Nordic Semiconductor ASA.
+
+*/
+
+    .syntax unified
+    .arch armv6-m
+
+#ifdef __STARTUP_CONFIG
+#include "startup_config.h"
+#ifndef __STARTUP_CONFIG_STACK_ALIGNEMENT
+#define __STARTUP_CONFIG_STACK_ALIGNEMENT 3
+#endif
+#endif
+
+    .section .stack
+#if defined(__STARTUP_CONFIG)
+    .align __STARTUP_CONFIG_STACK_ALIGNEMENT
+    .equ    Stack_Size, __STARTUP_CONFIG_STACK_SIZE
+#elif defined(__STACK_SIZE)
+    .align 3
+    .equ    Stack_Size, __STACK_SIZE
+#else
+    .align 3
+    .equ    Stack_Size, 2048
+#endif
+    .globl __StackTop
+    .globl __StackLimit
+__StackLimit:
+    .space Stack_Size
+    .size __StackLimit, . - __StackLimit
+__StackTop:
+    .size __StackTop, . - __StackTop
+
+    .section .heap
+    .align 3
+#if defined(__STARTUP_CONFIG)
+    .equ Heap_Size, __STARTUP_CONFIG_HEAP_SIZE
+#elif defined(__HEAP_SIZE)
+    .equ Heap_Size, __HEAP_SIZE
+#else
+    .equ Heap_Size, 2048
+#endif
+    .globl __HeapBase
+    .globl __HeapLimit
+__HeapBase:
+    .if Heap_Size
+    .space Heap_Size
+    .endif
+    .size __HeapBase, . - __HeapBase
+__HeapLimit:
+    .size __HeapLimit, . - __HeapLimit
+
+    .section .isr_vector, "ax"
+    .align 2
+    .globl __isr_vector
+__isr_vector:
+    .long   __StackTop                  /* Top of Stack */
+    .long   Reset_Handler
+    .long   NMI_Handler
+    .long   HardFault_Handler
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   SVC_Handler
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   PendSV_Handler
+    .long   SysTick_Handler
+
+  /* External Interrupts */
+    .long   POWER_CLOCK_IRQHandler
+    .long   RADIO_IRQHandler
+    .long   UART0_IRQHandler
+    .long   SPI0_TWI0_IRQHandler
+    .long   SPI1_TWI1_IRQHandler
+    .long   0                           /*Reserved */
+    .long   GPIOTE_IRQHandler
+    .long   ADC_IRQHandler
+    .long   TIMER0_IRQHandler
+    .long   TIMER1_IRQHandler
+    .long   TIMER2_IRQHandler
+    .long   RTC0_IRQHandler
+    .long   TEMP_IRQHandler
+    .long   RNG_IRQHandler
+    .long   ECB_IRQHandler
+    .long   CCM_AAR_IRQHandler
+    .long   WDT_IRQHandler
+    .long   RTC1_IRQHandler
+    .long   QDEC_IRQHandler
+    .long   LPCOMP_IRQHandler
+    .long   SWI0_IRQHandler
+    .long   SWI1_IRQHandler
+    .long   SWI2_IRQHandler
+    .long   SWI3_IRQHandler
+    .long   SWI4_IRQHandler
+    .long   SWI5_IRQHandler
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+    .long   0                           /*Reserved */
+
+    .size __isr_vector, . - __isr_vector
+
+/* Reset Handler */
+
+    .equ    NRF_POWER_RAMON_ADDRESS,             0x40000524
+    .equ    NRF_POWER_RAMONB_ADDRESS,            0x40000554
+    .equ    NRF_POWER_RAMONx_RAMxON_ONMODE_Msk,  0x3
+
+    .text
+    .thumb
+    .thumb_func
+    .align 1
+    .globl Reset_Handler
+    .type Reset_Handler, %function
+Reset_Handler:
+
+    MOVS    R1, #NRF_POWER_RAMONx_RAMxON_ONMODE_Msk
+    
+    LDR     R0, =NRF_POWER_RAMON_ADDRESS
+    LDR     R2, [R0]
+    ORRS    R2, R1
+    STR     R2, [R0]
+
+    LDR     R0, =NRF_POWER_RAMONB_ADDRESS
+    LDR     R2, [R0]
+    ORRS    R2, R1
+    STR     R2, [R0]
+
+/* Loop to copy data from read only memory to RAM.
+ * The ranges of copy from/to are specified by following symbols:
+ *      __etext: LMA of start of the section to copy from. Usually end of text
+ *      __data_start: VMA of start of the section to copy to.
+ *      __data_end: VMA of end of the section to copy to. 
+ *
+ * All addresses must be aligned to 4 bytes boundary.
+ */
+#ifndef __STARTUP_SKIP_ETEXT
+
+/* Load .data */
+    ldr r1, =__data_start
+    ldr r2, =__data_end
+    ldr r3, =__data_load_start
+    bl copy_region
+
+/* Load .sdata */
+    ldr r1, =__sdata_start
+    ldr r2, =__sdata_end
+    ldr r3, =__sdata_load_start
+    bl copy_region
+
+/* Load .tdata */
+    ldr r1, =__tdata_start
+    ldr r2, =__tdata_end
+    ldr r3, =__tdata_load_start
+    bl copy_region
+
+/* Load .fast */
+    ldr r1, =__fast_start
+    ldr r2, =__fast_end
+    ldr r3, =__fast_load_start
+    bl copy_region
+
+    b copy_etext_done
+
+/* Method that loads data from nvm to ram */
+copy_region:
+    subs r2, r2, r1
+    ble L_copy_region_done
+
+L_copy_region:
+    subs r2, r2, #4
+    ldr r0, [r3,r2]
+    str r0, [r1,r2]
+    bgt L_copy_region
+
+L_copy_region_done:
+
+    bx lr
+
+copy_etext_done:
+
+
+#endif
+
+/* This part of work usually is done in C library startup code. Otherwise,
+ * define __STARTUP_CLEAR_BSS to enable it in this startup. This section
+ * clears the RAM where BSS data is located.
+ *
+ * The BSS section is specified by following symbols
+ *    __bss_start__: start of the BSS section.
+ *    __bss_end__: end of the BSS section.
+ *
+ * All addresses must be aligned to 4 bytes boundary.
+ */
+#ifdef __STARTUP_CLEAR_BSS
+    ldr r1, =__bss_start__
+    ldr r2, =__bss_end__
+    bl clear_region
+
+    ldr r1, =__tbss_start__
+    ldr r2, =__tbss_end__
+    bl clear_region
+
+    ldr r1, =__sbss_start__
+    ldr r2, =__sbss_end__
+    bl clear_region
+
+    b clear_bss_done
+
+/* Method that clears default-0 registers */
+clear_region:
+    movs r0, 0
+
+    subs r2, r2, r1
+    ble .L_clear_region_done
+
+.L_clear_region:
+    subs r2, r2, #4
+    str r0, [r1, r2]
+    bgt .L_clear_region
+
+.L_clear_region_done:
+
+    bx lr
+
+clear_bss_done:
+
+#endif /* __STARTUP_CLEAR_BSS */
+
+/* Execute SystemInit function. */
+    bl SystemInit
+
+/* Call _start function provided by libraries.
+ * If those libraries are not accessible, define __START as your entry point.
+ */
+#ifndef __START
+#define __START _start
+#endif
+    bl __START
+
+    .pool
+    .size   Reset_Handler,.-Reset_Handler
+
+    .section ".text"
+
+
+/* Dummy Exception Handlers (infinite loops which can be modified) */
+
+    .weak   NMI_Handler
+    .type   NMI_Handler, %function
+NMI_Handler:
+    b       .
+    .size   NMI_Handler, . - NMI_Handler
+
+
+    .weak   HardFault_Handler
+    .type   HardFault_Handler, %function
+HardFault_Handler:
+    b       .
+    .size   HardFault_Handler, . - HardFault_Handler
+
+
+    .weak   SVC_Handler
+    .type   SVC_Handler, %function
+SVC_Handler:
+    b       .
+    .size   SVC_Handler, . - SVC_Handler
+
+
+    .weak   PendSV_Handler
+    .type   PendSV_Handler, %function
+PendSV_Handler:
+    b       .
+    .size   PendSV_Handler, . - PendSV_Handler
+
+
+    .weak   SysTick_Handler
+    .type   SysTick_Handler, %function
+SysTick_Handler:
+    b       .
+    .size   SysTick_Handler, . - SysTick_Handler
+
+
+/* IRQ Handlers */
+
+    .globl  Default_Handler
+    .type   Default_Handler, %function
+Default_Handler:
+    b       .
+    .size   Default_Handler, . - Default_Handler
+
+    .macro  IRQ handler
+    .weak   \handler
+    .set    \handler, Default_Handler
+    .endm
+
+    IRQ  POWER_CLOCK_IRQHandler
+    IRQ  RADIO_IRQHandler
+    IRQ  UART0_IRQHandler
+    IRQ  SPI0_TWI0_IRQHandler
+    IRQ  SPI1_TWI1_IRQHandler
+    IRQ  GPIOTE_IRQHandler
+    IRQ  ADC_IRQHandler
+    IRQ  TIMER0_IRQHandler
+    IRQ  TIMER1_IRQHandler
+    IRQ  TIMER2_IRQHandler
+    IRQ  RTC0_IRQHandler
+    IRQ  TEMP_IRQHandler
+    IRQ  RNG_IRQHandler
+    IRQ  ECB_IRQHandler
+    IRQ  CCM_AAR_IRQHandler
+    IRQ  WDT_IRQHandler
+    IRQ  RTC1_IRQHandler
+    IRQ  QDEC_IRQHandler
+    IRQ  LPCOMP_IRQHandler
+    IRQ  SWI0_IRQHandler
+    IRQ  SWI1_IRQHandler
+    IRQ  SWI2_IRQHandler
+    IRQ  SWI3_IRQHandler
+    IRQ  SWI4_IRQHandler
+    IRQ  SWI5_IRQHandler
+
+  .end
+</code></pre>
+<p>All the symbol above would be defined at a linker script(.ld).</p>
+<h3 id="makefile">Makefile</h3>
+<p>After everything prepared, use simply a makefile to complie.</p>
+<pre><code class="highlight makefile">TARGET = main
+
+CC = arm-none-eabi-gcc
+OBJCOPY = arm-none-eabi-objcopy
+
+SRC = main.c \
+      <span class="variable">$(<span class="built_in">wildcard</span> nrfx/drivers/src/*.c)</span> \
+      nrfx/mdk/gcc_startup_nrf51.S
+
+INCLUDES = -I. -Inrfx -Inrfx/mdk -Inrfx/hal -Inrfx/templates -Inrfx/drivers/<span class="keyword">include</span>
+
+CFLAGS = -mcpu=cortex-m0 -mthumb -Wall -O0 -g -DNRF51 -DNRF51822_XXAA <span class="variable">$(INCLUDES)</span>
+
+LDFLAGS = -T nrf51822_xxaa.ld -nostartfiles
+
+OBJ := $(SRC:.c=.o)
+OBJ := $(OBJ:.S=.o)
+
+<span class="section">all: <span class="variable">$(TARGET)</span>.elf</span>
+
+<span class="section">%.o: %.c</span>
+	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span>
+
+<span class="section">%.o: %.S</span>
+	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span>
+
+<span class="variable">$(TARGET)</span>.elf: <span class="variable">$(OBJ)</span>
+	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> <span class="variable">$(LDFLAGS)</span> <span class="variable">$^</span> -o <span class="variable">$@</span>
+
+<span class="section">bin: <span class="variable">$(TARGET)</span>.elf</span>
+	<span class="variable">$(OBJCOPY)</span> -O binary <span class="variable">$&lt;</span> <span class="variable">$(TARGET)</span>.bin
+
+<span class="section">clean:</span>
+	rm -f <span class="variable">$(OBJ)</span> <span class="variable">$(TARGET)</span>.elf <span class="variable">$(TARGET)</span>.bin</code></pre>
+<h1 id="references">References</h1>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><a target="_blank" rel="noopener" href="https://www.waveshare.net/w/upload/9/9a/NRF51_Series_Reference_Manual_v2.1.pdf">NRF51_Series_Reference_Manual_v2.1.pdf</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a target="_blank" rel="noopener" href="https://developer.arm.com/documentation/ddi0419/latest">Armv6-M
+Architecture Reference Manual</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-11-06T00:00:00+08:00"
-              content="2024-11-06">
-          11-06
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/categories/%E6%97%A5%E5%B8%B8/20241106-daily/" itemprop="url">
-            <span itemprop="name">钱塘江边</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ARM/" rel="tag"><i class="fa fa-tag"></i> ARM</a>
+              <a href="/tags/QEMU/" rel="tag"><i class="fa fa-tag"></i> QEMU</a>
+              <a href="/tags/bare-metal/" rel="tag"><i class="fa fa-tag"></i> bare metal</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/categories/Study/simple-nn/" rel="prev" title="简单神经网络搭建">
+                  <i class="fa fa-angle-left"></i> 简单神经网络搭建
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-11-03T00:00:00+08:00"
-              content="2024-11-03">
-          11-03
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/categories/CTF/241103-shellcode/" itemprop="url">
-            <span itemprop="name">shellcode - 有长度限制的 shellcode 解法</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-10-07T00:00:00+08:00"
-              content="2024-10-07">
-          10-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/categories/CTF/heap1sEz/" itemprop="url">
-            <span itemprop="name">Heap1sEz - 堆漏洞的简单利用</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/archives/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span>
-  </nav>
+
+
+
 
 </div>
   </main>
