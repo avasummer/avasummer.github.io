@@ -1,3 +1,4 @@
+http://summ2.link/categories/CTF/0ctf2025/
 http://summ2.link/categories/%E6%97%A5%E5%B8%B8/git-outlook/
 http://summ2.link/categories/Study/kernel-build/
 http://summ2.link/links/index.html
@@ -42,6 +43,7 @@ http://summ2.link/tags/bare-metal/
 http://summ2.link/tags/ICS/
 http://summ2.link/tags/FSOP/
 http://summ2.link/tags/House-of-Apple/
+http://summ2.link/tags/fuzz/
 http://summ2.link/categories/CTF/
 http://summ2.link/categories/%E6%97%A5%E5%B8%B8/
 http://summ2.link/categories/Web/
