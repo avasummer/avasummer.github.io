@@ -1,8 +1,10 @@
+http://summ2.link/categories/%E6%97%A5%E5%B8%B8/d3ctf-op/
 http://summ2.link/links/index.html
+http://summ2.link/categories/Study/d3ctf-op/
 http://summ2.link/categories/Study/apple-slap/
 http://summ2.link/categories/Study/nju-ics-pa/
 http://summ2.link/categories/CTF/0ctf2025/
-http://summ2.link/categories/%E6%97%A5%E5%B8%B8/git-outlook/
+http://summ2.link/categories/Study/git-outlook/
 http://summ2.link/categories/Study/kernel-build/
 http://summ2.link/categories/CTF/ycb2025/
 http://summ2.link/categories/Pwn/arm-bare-metal-helloworld/
@@ -52,6 +54,8 @@ http://summ2.link/tags/Load-Address-Prediction/
 http://summ2.link/tags/Paper-Reading/
 http://summ2.link/tags/FSOP/
 http://summ2.link/tags/House-of-Apple/
+http://summ2.link/tags/CTF/
+http://summ2.link/tags/DevOps/
 http://summ2.link/categories/CTF/
 http://summ2.link/categories/%E6%97%A5%E5%B8%B8/
 http://summ2.link/categories/Web/
